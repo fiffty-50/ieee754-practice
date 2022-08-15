@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include "floatwidget.h"
+#include "dectoieee.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     connectSignals();
-    auto decToHex = new FloatWidget(this);
+    auto decToHex = new DecToIeee(this);
     ui->tabWidget->addTab(decToHex, "Z10 -> Z32 -> Z16");
     ui->tabWidget->setCurrentWidget(decToHex);
 }
@@ -55,7 +55,7 @@ void MainWindow::on_aboutClicked()
 
                 "<p>This program uses <a href=\"http://%3/\">Qt</a> version %4."
                 ).arg(
-                QStringLiteral("github.com/fiffty-50/"),
+                QStringLiteral("github.com/fiffty-50/ieee754-practice"),
                 QStringLiteral("gnu.org/licenses/"),
                 QStringLiteral("qt.io"),
                 QT_VERSION_STR);

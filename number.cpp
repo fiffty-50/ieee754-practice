@@ -1,0 +1,132 @@
+#include "number.h"
+#include <math.h>
+#include <QRegularExpression>
+#include <QDebug>
+
+QString Number::toDecimalString()
+{
+    qint64 int_out = 0;
+    // Convert integer part
+    int j = 0;
+    for (int i = integer.size() -1; i >= 0; i--) {
+        if (integer[i])
+            int_out += pow(2, j);
+        j++;
+    }
+
+    double dec_out = 0;
+    // convert decimal part
+    j = 1;
+    for (int i = 0; i < decimals.size(); i ++) {
+        if (decimals[i]) {
+            dec_out += pow(2, -j);
+        }
+        j++;
+    }
+
+    QString out = QString::number(int_out) + QLatin1Char('.') + QString::number(dec_out).remove(0,2);
+    if (sign)
+        out = out.prepend(QLatin1Char('-'));
+
+    return out;
+}
+
+int Number::getShift()
+{
+    if (shift == 0)
+        normalisedBinary();
+    return shift;
+}
+
+QString Number::absoluteBinary()
+{
+    if (integer.size() == 0) {
+        return QString("0");
+    }
+
+    QString binary_string;
+
+
+    for (int i = 0; i < integer.size(); i++) {
+        binary_string.append(QString::number(integer[i]));
+    }
+
+    binary_string.append(QLatin1Char('.'));
+
+    for (int i = 0; i < decimals.size(); i++) {
+        binary_string.append(QString::number(decimals[i]));
+    }
+
+    // Remove leading zeroes
+    static QRegularExpression re("^[0]*");
+    binary_string.remove(re);
+
+    return binary_string;
+}
+
+QString Number::normalisedBinary()
+{
+    QString absolute_binary_string = absoluteBinary();
+    // get the decimal separator position
+    int original_decimal_position = absolute_binary_string.indexOf(QLatin1Char('.'));
+    // get the position of the first '1'
+    int leftmost_one = absolute_binary_string.indexOf(QLatin1Char('1'));
+    // determine how many positions the decimal point needs to be shifted
+    shift = (original_decimal_position - (leftmost_one + 1));
+    // edit the binary string
+    absolute_binary_string.remove(0, leftmost_one);
+    absolute_binary_string.remove(QLatin1Char('.'));
+    absolute_binary_string.insert(1, QLatin1Char('.'));
+
+    return absolute_binary_string;
+}
+
+QString Number::mantissa()
+{
+    QString mantissa = normalisedBinary();
+    mantissa.remove(0,2);
+    while (mantissa.length() != 23)
+        mantissa.append(QLatin1Char('0'));
+    return mantissa;
+}
+
+QString Number::biasedExponent()
+{
+    if (shift == 0)
+        normalisedBinary();
+
+    int biased_exponent = 127 + shift;
+    return (QString::number(biased_exponent, 2));
+}
+
+bool Number::getSign() const
+{
+    return sign;
+}
+
+QString Number::toBinaryString()
+{
+    return QString::number(sign) + biasedExponent() + mantissa();
+}
+
+QStringList Number::toNibbles()
+{
+    QString binary_string = toBinaryString();
+    QStringList nibbles;
+    for (int i = 0; i < 9; i++)
+        nibbles.append(binary_string.mid(4 * i, 4));
+
+    return nibbles;
+}
+
+QString Number::toHex()
+{
+    QString binary_string = toBinaryString();
+    bool ok;
+    auto value = binary_string.toULong(&ok, 2);  //convert Bit String in base 2 to int
+    if (!ok)
+        return QString();
+
+    QString hex_string = QString::number(value, 16);  //Create number string with base 16
+    return hex_string.toUpper();
+}

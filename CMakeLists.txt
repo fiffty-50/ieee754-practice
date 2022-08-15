@@ -20,9 +20,15 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
 
-        floatwidget.h
-        floatwidget.cpp
-        floatwidget.ui
+
+        number.h
+        number.cpp
+        exercisegenerator.h
+        exercisegenerator.cpp
+
+        dectoieee.h
+        dectoieee.cpp
+        dectoieee.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
