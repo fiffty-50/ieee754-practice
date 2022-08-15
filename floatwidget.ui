@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FloatWidget</class>
+ <widget class="QWidget" name="FloatWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>430</width>
+    <height>444</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="difficultyLabel">
+     <property name="text">
+      <string>Difficulty</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="difficultyComboBox">
+     <item>
+      <property name="text">
+       <string>Easy</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Moderate</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hard</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="decimalNumberLabel">
+     <property name="text">
+      <string>Decimal Number</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDoubleSpinBox" name="doubleSpinBox">
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>-104876.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>104877.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="binaryLabel">
+     <property name="text">
+      <string>Binary representation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="binaryDisplayLabel">
+     <property name="text">
+      <string>00000000000000000000000000000000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="biasLabel">
+     <property name="text">
+      <string>Determine bias</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="biasDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mantissaLabel">
+     <property name="text">
+      <string>Pad the mantissa</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="mantissaDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="exponentLabel">
+     <property name="text">
+      <string>Determine biased exponent</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="exponentDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="signBitLabel">
+     <property name="text">
+      <string>Determine the sign bit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="signBitDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="concatLabel">
+     <property name="text">
+      <string>Concatenate the elements</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="concatDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="hexLabel">
+     <property name="text">
+      <string>Convert to hexadecimal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="hexDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QPushButton" name="generatePushButton">
+      <property name="text">
+       <string>Start Over</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nextPushButton">
+      <property name="text">
+       <string>Next Step</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="resultPushButton">
+      <property name="text">
+       <string>Result</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
