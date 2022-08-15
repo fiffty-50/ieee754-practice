@@ -15,20 +15,20 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-
-
-        number.h
-        number.cpp
-        exercisegenerator.h
-        exercisegenerator.cpp
-
-        dectoieee.h
-        dectoieee.cpp
-        dectoieee.ui
+        src/main.cpp
+        
+        src/number.h
+        src/number.cpp
+        src/exercisegenerator.h
+        src/exercisegenerator.cpp
+        
+        # GUI
+        src/gui/mainwindow.cpp
+        src/gui/mainwindow.h
+        src/gui/mainwindow.ui
+        src/gui/dectoieee.h
+        src/gui/dectoieee.cpp
+        src/gui/dectoieee.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

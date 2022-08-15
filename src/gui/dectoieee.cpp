@@ -1,6 +1,6 @@
 #include "dectoieee.h"
 #include "ui_dectoieee.h"
-#include "exercisegenerator.h"
+#include "src/exercisegenerator.h"
 #include <QMessageBox>
 #include <QDebug>
 

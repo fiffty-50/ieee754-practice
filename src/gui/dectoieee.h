@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QBitArray>
 #include <QRandomGenerator>
-#include "number.h"
+#include "src/number.h"
 
 namespace Ui {
 class DecToIeee;
