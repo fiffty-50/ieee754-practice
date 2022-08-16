@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include "dectoieee.h"
+#include "ieeetodec.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -10,9 +11,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     connectSignals();
+
     auto decToHex = new DecToIeee(this);
-    ui->tabWidget->addTab(decToHex, "Z10 -> Z32 -> Z16");
-    ui->tabWidget->setCurrentWidget(decToHex);
+    ui->tabWidget->addTab(decToHex, "Dec->Hex");
+//    ui->tabWidget->setCurrentWidget(decToHex);
+
+    auto hexToDec = new IeeeToDec(this);
+    ui->tabWidget->addTab(hexToDec, "Hex->Dec");
+    ui->tabWidget->setCurrentWidget(hexToDec);
 }
 
 MainWindow::~MainWindow()
@@ -36,8 +42,8 @@ void MainWindow::on_aboutClicked()
                 "&#169; 2022 Felix Turowsky"
                 "<br>"
 
-                "<p>This program is intended as a tool for computer science students who want to practice conversion from decimal base 10 numbers to IEEE-754 single precision"
-                "floating point numbers. It is exclusively designed for educational purposes. If you encounter any bugs, please do report them on <a href=\"http://%1/\">Github</a> </p>"
+                "<p>This program is intended as a tool for computer science students who want to practice the conversion of decimal base 10 numbers to their IEEE-754 single precision"
+                "floating point representation. It is exclusively designed for educational purposes. If you encounter any bugs, please do report them on <a href=\"http://%1/\">Github</a> </p>"
 
                 "<p>This program is free software: you can redistribute it and/or modify "
                 "it under the terms of the GNU General Public License as published by "

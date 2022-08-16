@@ -172,7 +172,7 @@
      </property>
      <widget class="QPushButton" name="generatePushButton">
       <property name="text">
-       <string>Start Over</string>
+       <string>Start</string>
       </property>
      </widget>
      <widget class="QPushButton" name="nextPushButton">

@@ -49,10 +49,9 @@ void DecToIeee::on_generateExample()
 {
     m_step = 0;
     Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
-    Number number = ExerciseGenerator::generateDecimalNumber(difficulty);
+    m_number = ExerciseGenerator::generateDecimalNumber(difficulty);
 
-    ui->decimalDisplayLabel->setText(number.toDecimalString());
-    m_number = number;
+    ui->decimalDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
     ui->nextPushButton->setEnabled(true);
     ui->resultPushButton->setEnabled(true);
     clearLabels();
@@ -125,10 +124,10 @@ void DecToIeee::determineBias()
 {
     QString absolute_binary_string = m_number.absoluteBinary();
     QString normalised_binary_string = m_number.normalisedBinary();
-    int shift = m_number.getShift();
+    int shift = m_number.getBias();
 
 
-    QString out = QString("%1 = %2 x 2^<font color='red'>%3</font>").arg(absolute_binary_string, normalised_binary_string, QString::number(shift));
+    QString out = QString("%1 = %2 x 2^<b><font color='red'>%3</font></b>").arg(absolute_binary_string, normalised_binary_string, QString::number(shift));
     ui->biasDisplayLabel->setText(out);
 }
 
@@ -143,9 +142,9 @@ void DecToIeee::padMantissa()
 void DecToIeee::determineExponent()
 {
     QString biased_exponent = m_number.biasedExponent();
-    int shift = m_number.getShift();
+    int shift = m_number.getBias();
 
-    ui->exponentDisplayLabel->setText(QString("127 + <font color='red'>%1</font> = %2 -> to binary: <font color='green'>%3</font>").arg(QString::number(shift),QString::number(127 + shift), biased_exponent));
+    ui->exponentDisplayLabel->setText(QString("127 + <b><font color='red'>%1</font></b> = %2 -> to binary: <font color='green'>%3</font>").arg(QString::number(shift),QString::number(127 + shift), biased_exponent));
 }
 // Step 5 - Determine the sign bit
 void DecToIeee::determineSignBit()
@@ -153,7 +152,7 @@ void DecToIeee::determineSignBit()
     bool sign = m_number.getSign();
     QString sign_string;
     sign ? sign_string = "negative" : sign_string = "positive";
-    QString out = QString("%1 is a %2 number, so the sign bit is <font color='blue'> %3 </font>").arg(ui->decimalDisplayLabel->text(), sign_string, QString::number(sign));
+    QString out = QString("%1 is a <b>%2</b> number, so the sign bit is <b><font color='blue'>%3</font></b>").arg(ui->decimalDisplayLabel->text(), sign_string, QString::number(sign));
 
     ui->signBitDisplayLabel->setText(out);
 }
@@ -176,15 +175,11 @@ void DecToIeee::concatenate()
 // Step 7 - split the bits into nibbles
 void DecToIeee::stringToNibbles()
 {
-    const QStringList nibbles = m_number.toNibbles();
-    QString temp_binary_string = QString();
-    for (const auto &string : nibbles)
-        temp_binary_string.append(string + QLatin1Char(' '));
-    ui->nibblesDisplayLabel->setText(temp_binary_string);
+    ui->nibblesDisplayLabel->setText(m_number.toNibbles());
 }
 
 // Step 8 - convert Z32 to 0x
 void DecToIeee::stringToHex()
 {
-    ui->hexDisplayLabel->setText("<b>0x" + m_number.toHex() + "</b>");
+    ui->hexDisplayLabel->setText("<b>0x" + m_number.toString(Number::Format::Hexadecimal) + "</b>");
 }

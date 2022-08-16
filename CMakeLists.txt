@@ -29,6 +29,9 @@ set(PROJECT_SOURCES
         src/gui/dectoieee.h
         src/gui/dectoieee.cpp
         src/gui/dectoieee.ui
+        src/gui/ieeetodec.h
+        src/gui/ieeetodec.cpp
+        src/gui/ieeetodec.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

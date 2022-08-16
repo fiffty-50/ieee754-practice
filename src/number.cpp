@@ -3,39 +3,88 @@
 #include <QRegularExpression>
 #include <QDebug>
 
-QString Number::toDecimalString()
-{
-    qint64 int_out = 0;
-    // Convert integer part
-    int j = 0;
-    for (int i = integer.size() -1; i >= 0; i--) {
-        if (integer[i])
-            int_out += pow(2, j);
-        j++;
-    }
 
-    double dec_out = 0;
-    // convert decimal part
-    j = 1;
-    for (int i = 0; i < decimals.size(); i ++) {
-        if (decimals[i]) {
-            dec_out += pow(2, -j);
-        }
-        j++;
-    }
 
-    QString out = QString::number(int_out) + QLatin1Char('.') + QString::number(dec_out).remove(0,2);
-    if (sign)
-        out = out.prepend(QLatin1Char('-'));
-
-    return out;
-}
-
-int Number::getShift()
+int Number::getBias()
 {
     if (shift == 0)
         normalisedBinary();
     return shift;
+}
+
+QString Number::toString(Format format)
+{
+    switch (format) {
+    case Format::Binary:
+        return QString::number(sign) + biasedExponent() + mantissa();
+        break;
+    case Format::Decimal:
+        return toDecimalString();
+        break;
+    case Format::Hexadecimal:
+        return toHexString();
+        break;
+    }
+}
+
+
+
+QString Number::mantissa()
+{
+    QString mantissa = normalisedBinary();
+    mantissa.remove(0,2);
+    while (mantissa.length() != 23)
+        mantissa.append(QLatin1Char('0'));
+    return mantissa;
+}
+
+QString Number::biasedExponent(Format format)
+{
+    if (shift == 0)
+        normalisedBinary();
+
+    int biased_exponent = 127 + shift;
+
+    switch (format) {
+    case Format::Binary:
+        return (QString::number(biased_exponent, 2));
+        break;
+    case Format::Decimal:
+        return (QString::number(biased_exponent, 10));
+        break;
+    case Format::Hexadecimal:
+        return (QString::number(biased_exponent, 16));
+        break;
+    default:
+        return (QString::number(biased_exponent, 2));
+        break;
+    }
+
+}
+
+bool Number::getSign() const
+{
+    return sign;
+}
+
+QString Number::toNibbles(bool styled)
+{
+    QString binary_string = toBinaryString();
+
+
+    QString out;
+    if (!styled) {
+        for (int i = 0; i < 9; i++)
+            out.append(binary_string.mid(4 * i, 4) + QLatin1Char(' '));
+    } else {
+        out.append(QLatin1String("<font color='blue'>") + binary_string[0] + QLatin1String("</font><font color='orange'>") + binary_string.mid(1,3)); // first nibble
+        out.append(QLatin1Char(' ') + binary_string.mid(4,4));
+        out.append(QLatin1Char(' ') + binary_string[8] + QLatin1String("</font><font color='green'>") + binary_string.mid(9,3));
+        for (int i = 3; i < 9; i++)
+            out.append(binary_string.mid(4 * i, 4) + QLatin1Char(' '));
+        out.append(QLatin1String("</font>"));
+    }
+    return out;
 }
 
 QString Number::absoluteBinary()
@@ -81,45 +130,40 @@ QString Number::normalisedBinary()
     return absolute_binary_string;
 }
 
-QString Number::mantissa()
-{
-    QString mantissa = normalisedBinary();
-    mantissa.remove(0,2);
-    while (mantissa.length() != 23)
-        mantissa.append(QLatin1Char('0'));
-    return mantissa;
-}
-
-QString Number::biasedExponent()
-{
-    if (shift == 0)
-        normalisedBinary();
-
-    int biased_exponent = 127 + shift;
-    return (QString::number(biased_exponent, 2));
-}
-
-bool Number::getSign() const
-{
-    return sign;
-}
-
 QString Number::toBinaryString()
 {
     return QString::number(sign) + biasedExponent() + mantissa();
 }
 
-QStringList Number::toNibbles()
+QString Number::toDecimalString()
 {
-    QString binary_string = toBinaryString();
-    QStringList nibbles;
-    for (int i = 0; i < 9; i++)
-        nibbles.append(binary_string.mid(4 * i, 4));
+    qint64 int_out = 0;
+    // Convert integer part
+    int j = 0;
+    for (int i = integer.size() -1; i >= 0; i--) {
+        if (integer[i])
+            int_out += pow(2, j);
+        j++;
+    }
 
-    return nibbles;
+    double dec_out = 0;
+    // convert decimal part
+    j = 1;
+    for (int i = 0; i < decimals.size(); i ++) {
+        if (decimals[i]) {
+            dec_out += pow(2, -j);
+        }
+        j++;
+    }
+
+    QString out = QString::number(int_out) + QLatin1Char('.') + QString::number(dec_out).remove(0,2);
+    if (sign)
+        out = out.prepend(QLatin1Char('-'));
+
+    return out;
 }
 
-QString Number::toHex()
+QString Number::toHexString()
 {
     QString binary_string = toBinaryString();
     bool ok;

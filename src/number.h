@@ -3,6 +3,8 @@
 #include <QBitArray>
 #include <QString>
 
+#define DEB qDebug()
+
 /*!
  * \brief Represents a decimal number in base 2, e.g. 1011.011
  */
@@ -11,6 +13,19 @@ public:
     Number() = default;
     Number(bool sign_, const QBitArray &integer_, const QBitArray &decimals_)
         : sign(sign_), integer(integer_), decimals(decimals_) {}
+
+    enum class Format {Binary, Decimal, Hexadecimal};
+
+    /*!
+     * \brief return the encapsulated number as a string representation
+     * \return
+     */
+    QString toString(Format format);
+
+    /*!
+     * \brief return a (optionally styled) string of the nibbles making up the binary representation of self
+     */
+    QString toNibbles(bool styled = false);
 
     /*!
      * \brief returns a string of the absolute binary representation of number
@@ -30,7 +45,7 @@ public:
     /*!
      * \brief return the biased exponent in a binary String
      */
-    QString biasedExponent();
+    QString biasedExponent(Format format = Format::Binary);
 
     /*!
      * \brief return the sign bit
@@ -38,27 +53,13 @@ public:
     bool getSign() const;
 
     /*!
-     * \brief return a string of the binary representation of self
+     * \brief obtain the bias
      */
-    QString toBinaryString();
-
-    /*!
-     * \brief return a list of the nibbles making up the binary representation of self
-     */
-    QStringList toNibbles();
-
-    /*!
-     * \brief takes a string of bits e.g. "1011" and converts it to hexadecimal
-     */
-    QString toHex();
-
-    /*!
-     * \brief returns a double of the value encapsulated in self
-     */
-    QString toDecimalString();
+    int getBias();
 
 
-    int getShift();
+
+
 
 private:
     bool sign = false;
@@ -66,6 +67,20 @@ private:
     QBitArray integer = QBitArray();
     QBitArray decimals = QBitArray();
 
+    /*!
+     * \brief takes a string of bits e.g. "1011" and converts it to hexadecimal
+     */
+    QString toHexString();
+
+    /*!
+     * \brief returns a double of the value encapsulated in self
+     */
+    QString toDecimalString();
+
+    /*!
+     * \brief return a string of the binary representation of self
+     */
+    QString toBinaryString();
 };
 
 #endif // NUMBER_H
