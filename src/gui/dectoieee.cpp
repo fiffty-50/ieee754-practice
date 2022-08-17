@@ -49,7 +49,7 @@ void DecToIeee::on_generateExample()
 {
     m_step = 0;
     Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
-    m_number = ExerciseGenerator::generateDecimalNumber(difficulty);
+    m_number = ExerciseGenerator::generateFloatingPointExercise(difficulty);
 
     ui->decimalDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
     ui->nextPushButton->setEnabled(true);

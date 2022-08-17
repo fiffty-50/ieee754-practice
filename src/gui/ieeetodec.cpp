@@ -45,7 +45,7 @@ void IeeeToDec::on_generateExample()
     clearLabels();
     m_step = 0;
     Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
-    m_number = ExerciseGenerator::generateDecimalNumber(difficulty);
+    m_number = ExerciseGenerator::generateFloatingPointExercise(difficulty);
 
     const QString text = QLatin1String("<b>") + m_number.toString(Number::Format::Hexadecimal) + QLatin1String("</b>");
     ui->hexDisplayLabel->setText(text);

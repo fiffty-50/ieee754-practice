@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
@@ -17,10 +17,13 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 set(PROJECT_SOURCES
         src/main.cpp
         
+        src/RandomBits.h
         src/number.h
         src/number.cpp
         src/exercisegenerator.h
         src/exercisegenerator.cpp
+        src/bitband.h
+        src/bitband.cpp
         
         # GUI
         src/gui/mainwindow.cpp
@@ -32,6 +35,10 @@ set(PROJECT_SOURCES
         src/gui/ieeetodec.h
         src/gui/ieeetodec.cpp
         src/gui/ieeetodec.ui
+        src/gui/bitbandwidget.h
+        src/gui/bitbandwidget.cpp
+        src/gui/bitbandwidget.ui
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

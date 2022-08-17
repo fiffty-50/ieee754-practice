@@ -3,6 +3,7 @@
 
 #include "dectoieee.h"
 #include "ieeetodec.h"
+#include "bitbandwidget.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -14,11 +15,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto decToHex = new DecToIeee(this);
     ui->tabWidget->addTab(decToHex, "Dec->Hex");
-//    ui->tabWidget->setCurrentWidget(decToHex);
 
     auto hexToDec = new IeeeToDec(this);
     ui->tabWidget->addTab(hexToDec, "Hex->Dec");
-    ui->tabWidget->setCurrentWidget(hexToDec);
+
+    auto bitBandWidget = new BitBandWidget(this);
+    ui->tabWidget->addTab(bitBandWidget, "Bit Banding");
+    ui->tabWidget->setCurrentWidget(bitBandWidget);
 }
 
 MainWindow::~MainWindow()

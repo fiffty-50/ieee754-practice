@@ -6,7 +6,7 @@
 #define DEB qDebug()
 
 /*!
- * \brief Represents a decimal number in base 2, e.g. 1011.011
+ * \brief Represents a decimal number in base 2, e.g. 1011.011. Contains logic for conversion to and from IEEE-754 single precision floating point representation.
  */
 class Number {
 public:
