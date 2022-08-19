@@ -22,9 +22,10 @@ public:
     ~DecToIeee();
 
 private slots:
-    void on_generateExample();
+    void on_StartConversion();
     void on_nextStepRequested();
     void on_resultRequested();
+    void on_difficultyChanged(int index);
 
 private:
     Ui::DecToIeee *ui;

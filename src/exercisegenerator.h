@@ -2,6 +2,7 @@
 #define EXERCISEGENERATOR_H
 #include "number.h"
 #include "bitband.h"
+#include "floatrepresentation.h"
 
 enum class Difficulty {easy, moderate, hard};
 
@@ -11,6 +12,8 @@ public:
     ExerciseGenerator() = default;
 
     static Number generateFloatingPointExercise(Difficulty difficulty);
+
+    static FloatRepresentation generateFloatingPointExerciseNew(Difficulty difficulty);
 
     static BitBand generateBitBandExercise(Difficulty difficulty);
 };

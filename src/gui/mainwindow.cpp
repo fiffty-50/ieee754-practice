@@ -4,6 +4,10 @@
 #include "dectoieee.h"
 #include "ieeetodec.h"
 #include "bitbandwidget.h"
+#include "intconverterwidget.h"
+#include "floatconverterwidget.h"
+#include "src/exercisegenerator.h"
+#include "src/nibble.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -22,6 +26,15 @@ MainWindow::MainWindow(QWidget *parent)
     auto bitBandWidget = new BitBandWidget(this);
     ui->tabWidget->addTab(bitBandWidget, "Bit Banding");
     ui->tabWidget->setCurrentWidget(bitBandWidget);
+
+    auto intConverterWidget = new IntConverterWidget(this);
+    ui->tabWidget->addTab(intConverterWidget, "Integer conversions");
+
+    auto floatConverterWidget = new FloatConverterWidget(this);
+    ui->tabWidget->addTab(floatConverterWidget, "Floating Point Conversion");
+
+    auto bb = ExerciseGenerator::generateBitBandExercise(Difficulty::easy);
+    DEB << bb.bbAddress();
 }
 
 MainWindow::~MainWindow()

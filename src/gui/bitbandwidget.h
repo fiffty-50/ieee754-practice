@@ -1,7 +1,6 @@
 #ifndef BITBANDWIDGET_H
 #define BITBANDWIDGET_H
 
-#include "qlabel.h"
 #include "src/bitband.h"
 #include <QWidget>
 #include <QAbstractButton>
@@ -22,20 +21,21 @@ private:
     Ui::BitBandWidget *ui;
     void connectSignals();
     void clearLabels();
+    enum class InputError { NotRecognized, OutOfRangeBB, OutOfRangeBBA };
+    bool checkUserInput();
+    void badUserInput(InputError error_code);
 
     enum Direction{FromBBA, FromBitPos};
     Direction m_direction = Direction::FromBBA;
     BitBand m_bitBand = BitBand(0);
     int m_step = 0;
 
-    const QMap<int, QPair<QLabel*, QLabel*>> *m_label_map;
-
-
 private slots:
-    void on_buttonGroupClicked(QAbstractButton *button);
-    void on_generateExample();
-    void on_nextStepRequested();
-    void on_resultRequested();
+    void buttonGroupClicked(QAbstractButton *button);
+    void difficultyChanged(int index);
+    void startButtonClicked();
+    void nextStepRequested();
+    void resultRequested();
 };
 
 #endif // BITBANDWIDGET_H

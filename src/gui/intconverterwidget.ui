@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IntConverterWidget</class>
+ <widget class="QWidget" name="IntConverterWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>411</width>
+    <height>308</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QComboBox" name="comboBox">
+     <item>
+      <property name="text">
+       <string>Binary</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Decimal</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hexadecimal</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Convert</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="binaryLabel">
+     <property name="text">
+      <string>Binary</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="binaryDisplayLabel">
+     <property name="text">
+      <string>binary display</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="decimalLabel">
+     <property name="text">
+      <string>Decimal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="decimalDisplayLabel">
+     <property name="text">
+      <string>decimal display</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="hexLabel">
+     <property name="text">
+      <string>Hexadecimal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="hexDisplayLabel">
+     <property name="text">
+      <string>hex display</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

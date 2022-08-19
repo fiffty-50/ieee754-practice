@@ -12,6 +12,42 @@ int Number::getBias()
     return shift;
 }
 
+Number Number::fromFloat(float value_in)
+{
+    // reinterpret as uint to get bits
+    unsigned int bits = *reinterpret_cast<int*>(&value_in);
+
+    // get sign bit
+    unsigned int sign_mask      = 0x80000000;
+    bool sign = bits & sign_mask;
+
+    // get exponent bits
+    unsigned int exponent_mask  = 0xFF000000;
+    unsigned int exponent = ((bits << 1) & exponent_mask) >> 24;
+    QBitArray exponent_array(8);
+    for (int i = 0; i < 8; i++){
+        unsigned int mask = 0x80;
+        exponent_array[i] = mask & exponent;
+        exponent = exponent << 1;
+    }
+
+    // get mantissa bits
+    unsigned int mantissa = reinterpret_cast<unsigned int&>(value_in) & (((unsigned int)1 << 24) - 1);
+    QBitArray mantissa_array(23);
+    for (int i = 0; i < 23; i++){
+        unsigned int mask = 0x400000;
+        mantissa_array[i] = mask & mantissa;
+        mantissa = mantissa << 1;
+    }
+
+    DEB << "Sign:" << sign << " - " << QString::number(sign, 2);
+    DEB << "Exponent:" << exponent << " - " << exponent_array;
+    DEB << "mantissa:" << mantissa << " - " << mantissa_array;
+
+    return Number(sign, exponent_array, mantissa_array);
+
+}
+
 QString Number::toString(Format format)
 {
     switch (format) {
@@ -24,6 +60,8 @@ QString Number::toString(Format format)
     case Format::Hexadecimal:
         return toHexString();
         break;
+    default:
+        return {};
     }
 }
 
@@ -137,6 +175,8 @@ QString Number::toBinaryString()
 
 QString Number::toDecimalString()
 {
+    DEB << "integer array: " << integer;
+    DEB << "decimal array: " << decimals;
     qint64 int_out = 0;
     // Convert integer part
     int j = 0;
@@ -160,6 +200,8 @@ QString Number::toDecimalString()
     if (sign)
         out = out.prepend(QLatin1Char('-'));
 
+    DEB << "Out: " << out;
+
     return out;
 }
 
@@ -174,3 +216,4 @@ QString Number::toHexString()
     QString hex_string = QString::number(value, 16);  //Create number string with base 16
     return hex_string.toUpper();
 }
+

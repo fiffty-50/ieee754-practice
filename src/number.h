@@ -2,8 +2,7 @@
 #define NUMBER_H
 #include <QBitArray>
 #include <QString>
-
-#define DEB qDebug()
+#include "debug.h"
 
 /*!
  * \brief Represents a decimal number in base 2, e.g. 1011.011. Contains logic for conversion to and from IEEE-754 single precision floating point representation.
@@ -56,6 +55,19 @@ public:
      * \brief obtain the bias
      */
     int getBias();
+
+    /*!
+     * \brief create a Number object from a double input value.
+     * \return
+     */
+    static Number fromFloat(float value_in);
+
+    operator QString(){
+        DEB << "Sign: " << sign;
+        DEB << "integer part: " << integer;
+        DEB << "decimal part: " << decimals;
+        return QString();
+    };
 
 
 

@@ -1,6 +1,7 @@
 #ifndef BITBAND_H
 #define BITBAND_H
 
+#include <QString>
 
 /*!
  * \brief The BitBand class encapsulates the logic for solving bit-banding exercises.
@@ -19,6 +20,9 @@ public:
     int bbAliasAddress() const;
     int bbAddress() const;
     int bitPos() const;
+
+    enum Direction {FromBBA, FromBitPos};
+    QString getStep(Direction direction, int step_number);
 
 private:
     int m_bbAliasAddress = 0;

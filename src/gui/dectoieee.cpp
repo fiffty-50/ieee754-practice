@@ -13,6 +13,8 @@ DecToIeee::DecToIeee(QWidget *parent) :
     clearLabels();
     ui->nextPushButton->setEnabled(false);
     ui->resultPushButton->setEnabled(false);
+    ui->decimalNumberCustomLabel->setVisible(false);
+    ui->lineEdit->setVisible(false);
 }
 
 DecToIeee::~DecToIeee()
@@ -22,39 +24,59 @@ DecToIeee::~DecToIeee()
 
 void DecToIeee::clearLabels()
 {
-    ui->binaryDisplayLabel->setText(QString());
-    ui->biasDisplayLabel->setText(QString());
-    ui->exponentDisplayLabel->setText(QString());
-    ui->mantissaDisplayLabel->setText(QString());
-    ui->biasDisplayLabel->setText(QString());
-    ui->signBitDisplayLabel->setText(QString());
-    ui->concatDisplayLabel->setText(QString());
-    ui->nibblesDisplayLabel->setText(QString());
-    ui->hexDisplayLabel->setText(QString());
+    const QList<QLabel*> labels = this->findChildren<QLabel*>();
+    for (const auto &label : labels)
+        if(label->objectName().contains(QLatin1String("Display")))
+            label->setText(QString());
 }
 
 // Signals and Slots
 
 void DecToIeee::connectSignals()
 {
-    QObject::connect(ui->generatePushButton, &QPushButton::clicked,
-                     this,                   &DecToIeee::on_generateExample);
+    QObject::connect(ui->startPushButton,    &QPushButton::clicked,
+                     this,                   &DecToIeee::on_StartConversion);
     QObject::connect(ui->nextPushButton,     &QPushButton::clicked,
                      this,                   &DecToIeee::on_nextStepRequested);
     QObject::connect(ui->resultPushButton,   &QPushButton::clicked,
                      this,                   &DecToIeee::on_resultRequested);
+    QObject::connect(ui->difficultyComboBox, &QComboBox::currentIndexChanged,
+                     this,                   &DecToIeee::on_difficultyChanged);
 }
 
-void DecToIeee::on_generateExample()
+void DecToIeee::on_StartConversion()
 {
-    m_step = 0;
-    Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
-    m_number = ExerciseGenerator::generateFloatingPointExercise(difficulty);
+    float number_in;
+    switch (ui->difficultyComboBox->currentIndex()) {
+    case 3: // custom
+        bool ok;
+        number_in = ui->lineEdit->text().toFloat(&ok);
+        if (!ok) {
+            QMessageBox mb(this);
+            mb.setText("Unable to interpret input. Plase enter a base 10 decimal number.");
+            mb.exec();
+            ui->lineEdit->setText(QString());
+            return;
+        }
+        DEB << "Number: " << number_in;
+        m_number = Number::fromFloat(number_in);
+        m_step = 0;
+        ui->nextPushButton->setEnabled(true);
+        ui->resultPushButton->setEnabled(true);
+        clearLabels();
+        break;
+    default:
+        m_step = 0;
+        Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
+        m_number = ExerciseGenerator::generateFloatingPointExercise(difficulty);
 
-    ui->decimalDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
-    ui->nextPushButton->setEnabled(true);
-    ui->resultPushButton->setEnabled(true);
-    clearLabels();
+        ui->decimalDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
+        ui->nextPushButton->setEnabled(true);
+        ui->resultPushButton->setEnabled(true);
+        clearLabels();
+        break;
+    }
+
 }
 
 void DecToIeee::on_nextStepRequested()
@@ -110,6 +132,24 @@ void DecToIeee::on_resultRequested()
 {
     for (int i = 0; i < 8 ; i++)
         on_nextStepRequested();
+}
+
+void DecToIeee::on_difficultyChanged(int index)
+{
+    if (index == 3) { // Custom
+        ui->decimalLabel->setVisible(false);
+        ui->decimalDisplayLabel->setVisible(false);
+        ui->decimalNumberCustomLabel->setVisible(true);
+        ui->lineEdit->setVisible(true);
+        clearLabels();
+    } else { // generate Example
+        ui->decimalLabel->setVisible(true);
+        ui->decimalDisplayLabel->setVisible(true);
+        ui->decimalNumberCustomLabel->setVisible(false);
+        ui->lineEdit->setVisible(false);
+        clearLabels();
+    }
+
 }
 
 // Conversion Logic

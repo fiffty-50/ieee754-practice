@@ -45,3 +45,17 @@ int BitBand::bitPos() const
 {
     return m_bitPos;
 }
+
+QString BitBand::getStep(Direction direction, int step_number)
+{
+    switch (direction) {
+    case Direction::FromBBA:
+        break;
+    case Direction::FromBitPos:
+        break;
+    default:
+        break;
+    }
+
+    return QString();
+}

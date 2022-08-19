@@ -16,10 +16,13 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 set(PROJECT_SOURCES
         src/main.cpp
-        
+
+        src/nibble.h
         src/RandomBits.h
         src/number.h
         src/number.cpp
+        src/floatrepresentation.h
+        src/floatrepresentation.cpp
         src/exercisegenerator.h
         src/exercisegenerator.cpp
         src/bitband.h
@@ -38,6 +41,14 @@ set(PROJECT_SOURCES
         src/gui/bitbandwidget.h
         src/gui/bitbandwidget.cpp
         src/gui/bitbandwidget.ui
+        src/gui/intconverterwidget.h
+        src/gui/intconverterwidget.cpp
+        src/gui/intconverterwidget.ui
+        src/gui/floatconverterwidget.h
+        src/gui/floatconverterwidget.cpp
+        src/gui/floatconverterwidget.ui
+
+        src/debug.h
 
 )
 

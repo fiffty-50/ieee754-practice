@@ -14,10 +14,112 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="difficultyLabel">
+   <item row="8" column="1">
+    <widget class="QLabel" name="concatDisplayLabel">
      <property name="text">
-      <string>Difficulty</string>
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="binaryDisplayLabel">
+     <property name="text">
+      <string>00000000000000000000000000000000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="biasDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="exponentDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="concatLabel">
+     <property name="text">
+      <string>Concatenate the elements</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLabel" name="nibblesDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLabel" name="hexDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="signBitLabel">
+     <property name="text">
+      <string>Determine the sign bit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="decimalDisplayLabel">
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="2">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QPushButton" name="startPushButton">
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nextPushButton">
+      <property name="text">
+       <string>Next Step</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="resultPushButton">
+      <property name="text">
+       <string>Result</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="binaryLabel">
+     <property name="toolTip">
+      <string>Form the binary representation of the absolute value</string>
+     </property>
+     <property name="text">
+      <string>Binary representation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="mantissaDisplayLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="nibblesLabel">
+     <property name="text">
+      <string>Split into nibbles</string>
      </property>
     </widget>
    </item>
@@ -47,38 +149,42 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="binaryLabel">
-     <property name="toolTip">
-      <string>Form the binary representation of the absolute value</string>
-     </property>
+   <item row="6" column="0">
+    <widget class="QLabel" name="exponentLabel">
      <property name="text">
-      <string>Binary representation</string>
+      <string>Determine biased exponent</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="binaryDisplayLabel">
+   <item row="7" column="1">
+    <widget class="QLabel" name="signBitDisplayLabel">
      <property name="text">
-      <string>00000000000000000000000000000000</string>
+      <string>TextLabel</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="difficultyLabel">
+     <property name="text">
+      <string>Difficulty</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="biasLabel">
      <property name="text">
       <string>Determine bias</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="biasDisplayLabel">
+   <item row="10" column="0">
+    <widget class="QLabel" name="hexLabel">
      <property name="text">
-      <string>TextLabel</string>
+      <string>Convert to hexadecimal</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="mantissaLabel">
      <property name="toolTip">
       <string>Remove the leading one and pad to 23 digits:</string>
@@ -88,111 +194,15 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="mantissaDisplayLabel">
+   <item row="2" column="0">
+    <widget class="QLabel" name="decimalNumberCustomLabel">
      <property name="text">
-      <string>TextLabel</string>
+      <string>Decimal Number</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="exponentLabel">
-     <property name="text">
-      <string>Determine biased exponent</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QLabel" name="exponentDisplayLabel">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="signBitLabel">
-     <property name="text">
-      <string>Determine the sign bit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QLabel" name="signBitDisplayLabel">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="concatLabel">
-     <property name="text">
-      <string>Concatenate the elements</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="concatDisplayLabel">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="nibblesLabel">
-     <property name="text">
-      <string>Split into nibbles</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QLabel" name="nibblesDisplayLabel">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="hexLabel">
-     <property name="text">
-      <string>Convert to hexadecimal</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="QLabel" name="hexDisplayLabel">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="2">
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <widget class="QPushButton" name="generatePushButton">
-      <property name="text">
-       <string>Start</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="nextPushButton">
-      <property name="text">
-       <string>Next Step</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="resultPushButton">
-      <property name="text">
-       <string>Result</string>
-      </property>
-     </widget>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="decimalDisplayLabel">
-     <property name="text">
-      <string>0</string>
-     </property>
-    </widget>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="lineEdit"/>
    </item>
   </layout>
  </widget>
