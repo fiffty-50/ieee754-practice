@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->addTab(floatConverterWidget, "Floating Point Conversion");
 
     auto bb = ExerciseGenerator::generateBitBandExercise(Difficulty::easy);
-    DEB << bb.bbAddress();
+    DEB << bb.baseAddress();
 }
 
 MainWindow::~MainWindow()

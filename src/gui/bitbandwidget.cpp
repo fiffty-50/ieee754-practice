@@ -1,4 +1,5 @@
 #include "bitbandwidget.h"
+#include "qbuttongroup.h"
 #include "qmessagebox.h"
 #include "src/nibble.h"
 #include "ui_bitbandwidget.h"
@@ -9,7 +10,6 @@ BitBandWidget::BitBandWidget(QWidget *parent) :
     ui(new Ui::BitBandWidget)
 {
     ui->setupUi(this);
-    connectSignals();
     clearLabels();
 
     ui->nextPushButton->setEnabled(false);
@@ -17,6 +17,18 @@ BitBandWidget::BitBandWidget(QWidget *parent) :
     ui->customLabel->setVisible(false);
     ui->customLineEdit->setVisible(false);
     ui->bitPosSpinBox->setVisible(false);
+
+    auto directionButtons = new QButtonGroup(this);
+    directionButtons->addButton(ui->fromBbaCheckBox);
+    directionButtons->addButton(ui->fromBitPosCheckBox);
+    ui_directionButtonGroup = directionButtons;
+
+    auto addressingButtons = new QButtonGroup(this);
+    addressingButtons->addButton(ui->byteAddressedCheckBox);
+    addressingButtons->addButton(ui->wordAddressedCheckBox);
+    ui_addressingButtonGroup = addressingButtons;
+    connectSignals();
+
 }
 
 BitBandWidget::~BitBandWidget()
@@ -43,18 +55,18 @@ bool BitBandWidget::checkUserInput()
         return false;
     }
 
+    BitBand b;
+
     switch (m_direction) {
     case FromBBA:
-        if ((user_addr < 0x22000000) | (user_addr > 0x23ffffff)) {
-            badUserInput(InputError::OutOfRangeBBA);
-            return false;
-        }
+        b = BitBand(user_addr);
+        if(b.addressSpace() == BitBand::AddressSpace::OutOfRange)
+            badUserInput(InputError::OutOfRange);
         break;
     case FromBitPos:
-        if ((user_addr < 0x20000000) | (user_addr > 0x200fffff)) {
-            badUserInput(InputError::OutOfRangeBB);
-            return false;
-        }
+        b = BitBand(user_addr, ui->bitPosSpinBox->value());
+        if(b.addressSpace() == BitBand::AddressSpace::OutOfRange)
+            badUserInput(InputError::OutOfRange);
         break;
     default:
         return false;
@@ -71,13 +83,8 @@ void BitBandWidget::badUserInput(InputError error_code)
         error_msg = "<p>Input could not be converted to a number. "
                     "Please enter a hexadecimal values.</p>";
         break;
-    case InputError::OutOfRangeBBA:
-        error_msg = "<p>Input out of range. Input  "
-                    "has to be in the range</p> <tt>0x22000000 - 0x23ffffff</tt>";
-        break;
-    case InputError::OutOfRangeBB:
-        error_msg = "<p>Input out of range. Input"
-                    "has to be in the range</p> <tt>0x20000000 - 0x200fffff</tt>";
+    case InputError::OutOfRange:
+        error_msg = "<p>Input out of range.</p>";
         break;
     default:
         break;
@@ -89,9 +96,9 @@ void BitBandWidget::badUserInput(InputError error_code)
     mb.exec();
 }
 
-void BitBandWidget::buttonGroupClicked(QAbstractButton *button)
+void BitBandWidget::directionChanged(QAbstractButton *button)
 {
-    if (button == ui->bitposButton)
+    if (button == ui->fromBitPosCheckBox)
         m_direction = Direction::FromBitPos;
     else
         m_direction = Direction::FromBBA;
@@ -109,13 +116,12 @@ void BitBandWidget::difficultyChanged(int index)
             ui->bitPosSpinBox->setVisible(false);
             break;
         case Direction::FromBitPos:
-            ui->customLabel->setText("Enter a Byte Address (0x...) and Bit Position.");
+            ui->customLabel->setText("Enter a Base Address (0x...) and Bit Position.");
             ui->bitPosSpinBox->setVisible(true);
             break;
         default:
             break;
         }
-
     } else {
         ui->customLabel->setVisible(false);
         ui->customLineEdit->setVisible(false);
@@ -124,20 +130,30 @@ void BitBandWidget::difficultyChanged(int index)
     clearLabels();
 }
 
+void BitBandWidget::addressingTypeChanged(QAbstractButton *button)
+{
+    if(button == ui->byteAddressedCheckBox)
+        m_addressing = BitBand::AddressingType::Byte;
+    else
+        m_addressing = BitBand::AddressingType::Word;
+}
+
 // Signals and Slots
 
 void BitBandWidget::connectSignals()
 {
-    QObject::connect(ui->startPushButton,    &QPushButton::clicked,
-                     this,                   &BitBandWidget::startButtonClicked);
-    QObject::connect(ui->nextPushButton,     &QPushButton::clicked,
-                     this,                   &BitBandWidget::nextStepRequested);
-    QObject::connect(ui->resultPushButton,   &QPushButton::clicked,
-                     this,                   &BitBandWidget::resultRequested);
-    QObject::connect(ui->buttonGroup,        &QButtonGroup::buttonClicked,
-                     this,                   &BitBandWidget::buttonGroupClicked);
-    QObject::connect(ui->difficultyComboBox, &QComboBox::currentIndexChanged,
-                     this,                   &BitBandWidget::difficultyChanged);
+    QObject::connect(ui->startPushButton,       &QPushButton::clicked,
+                     this,                      &BitBandWidget::startButtonClicked);
+    QObject::connect(ui->nextPushButton,        &QPushButton::clicked,
+                     this,                      &BitBandWidget::nextStepRequested);
+    QObject::connect(ui->resultPushButton,      &QPushButton::clicked,
+                     this,                      &BitBandWidget::resultRequested);
+    QObject::connect(ui->difficultyComboBox,    &QComboBox::currentIndexChanged,
+                     this,                      &BitBandWidget::difficultyChanged);
+    QObject::connect(ui_directionButtonGroup,   &QButtonGroup::buttonClicked,
+                     this,                      &BitBandWidget::directionChanged);
+    QObject::connect(ui_addressingButtonGroup,  &QButtonGroup::buttonClicked,
+                     this,                      &BitBandWidget::addressingTypeChanged);
 }
 
 void BitBandWidget::startButtonClicked()
@@ -148,20 +164,20 @@ void BitBandWidget::startButtonClicked()
         bool ok;
         switch (m_direction) {
         case FromBBA:
-            m_bitBand = BitBand(ui->customLineEdit->text().toInt(&ok, 16));
+            m_bitBand = BitBand(ui->customLineEdit->text().toInt(&ok, 16), m_addressing);
             break;
         case FromBitPos:
-            m_bitBand = BitBand(ui->customLineEdit->text().toInt(&ok, 16), ui->bitPosSpinBox->value());
+            m_bitBand = BitBand(ui->customLineEdit->text().toInt(&ok, 16), ui->bitPosSpinBox->value(), m_addressing);
             break;
         default:
             break;
         }
     } else {
         Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
-        m_bitBand = ExerciseGenerator::generateBitBandExercise(difficulty);
+        m_bitBand = ExerciseGenerator::generateBitBandExercise(difficulty, m_addressing);
     }
 
-    DEB << "Bit Band: " << m_bitBand.bbAddress() << m_bitBand.bitPos() << m_bitBand.bbAliasAddress();
+    DEB << "Bit Band: " << m_bitBand.baseAddress() << m_bitBand.bitPos() << m_bitBand.BitBand::aliasAddress();
 
     m_step = 0;
     ui->nextPushButton->setEnabled(true);
@@ -171,13 +187,13 @@ void BitBandWidget::startButtonClicked()
     switch (m_direction) {
     case Direction::FromBBA:
         ui->step0Label->setText("Given the following:");
-        ui->step0DisplayLabel->setText("Bit-Band Alias Address:  <b><tt>0x" + Tools::toHex(m_bitBand.bbAliasAddress())
+        ui->step0DisplayLabel->setText("Bit-Band Alias Address:  <b><tt>0x" + Tools::toHex(m_bitBand.BitBand::aliasAddress())
                                          + "</b></tt>");
         break;
     case Direction::FromBitPos:
         ui->step0Label->setText("Given the following:");
-        ui->step0DisplayLabel->setText(QString("Byte Address X = <b><tt>0x%1</tt></b>, Bit Number n = <b> %2 </b>")
-                                         .arg(Tools::toHex(m_bitBand.bbAddress()))
+        ui->step0DisplayLabel->setText(QString("Base Address X = <b><tt>0x%1</tt></b>, Bit Number n = <b> %2 </b>")
+                                         .arg(Tools::toHex(m_bitBand.baseAddress()))
                                          .arg(m_bitBand.bitPos()));
         break;
     default:
@@ -187,33 +203,36 @@ void BitBandWidget::startButtonClicked()
 
 void BitBandWidget::nextStepRequested()
 {
-    QString s_temp_1, s_temp_2, s_temp_3;
+    QString s_temp_1, s_temp_2, s_temp_3, s_temp_4;
     int i_temp_1, i_temp_2, i_temp_3;
 
     switch (m_direction) {
     case Direction::FromBBA:
         switch (m_step) {
         case 0:
+            s_temp_1 = Tools::toHex(m_bitBand.bitPosOffset());
             ui->step1Label->setText("Calculate the Bit Position");
-            ui->step1DisplayLabel->setText("BITPOS = (BBA & 0x1C) >> 2");
+            ui->step1DisplayLabel->setText(QString("<tt>BITPOS = (BBA & 0x%1) >> 2").arg(s_temp_1));
             m_step++;
             break;
         case 1:
             m_step++;
-            i_temp_1 = m_bitBand.bbAliasAddress();
-            i_temp_2 = i_temp_1 & 0x1c;
+            i_temp_1 = m_bitBand.BitBand::aliasAddress();
+            i_temp_2 = i_temp_1 & m_bitBand.bitPosOffset();
             s_temp_1 = Tools::toNibbles(i_temp_1);
-            s_temp_2 = Tools::toNibbles(i_temp_2);
+            s_temp_2 = Tools::toNibbles(m_bitBand.bitPosOffset());
+            s_temp_3 = Tools::toNibbles(i_temp_2);
+            s_temp_4 = Tools::toHex(m_bitBand.bitPosOffset());
 
-            ui->step2Label->setText("<tt>1: BBA & 0x1C");
+            ui->step2Label->setText(QString("<tt>1: BBA & 0x%1").arg(s_temp_4));
             ui->step2DisplayLabel->setAlignment(Qt::AlignRight);
             ui->step2DisplayLabel->setText(QString("<tt>%1<br>"
-                                                       "& 0001 1010<hr>"
-                                                       "= %2<br>")
-                                               .arg(s_temp_1, s_temp_2));
+                                                       "& %2<hr>"
+                                                       "= %3<br>")
+                                               .arg(s_temp_1, s_temp_2, s_temp_3));
             break;
         case 2:
-            i_temp_1 = (m_bitBand.bbAliasAddress() & 0x1c) >> 2;
+            i_temp_1 = (m_bitBand.aliasAddress() & m_bitBand.bitPosOffset()) >> 2;
             s_temp_1 = Tools::toNibbles(i_temp_1);
             s_temp_2 = QString::number(i_temp_1);
             ui->step3Label->setText("<tt>2: >> 2");
@@ -223,13 +242,15 @@ void BitBandWidget::nextStepRequested()
             m_step++;
             break;
         case 3:
-            ui->step4Label->setText("Calculate the Byte Address");
-            ui->step4DisplayLabel->setText("<tt>BYTEADR = ((BBA & 0x1FFF FE0) >> 5) | 0x2000 0000");
+            DEB << "HERE!";
+            s_temp_1 = Tools::toHex(m_bitBand.baseAddressOffset());
+            ui->step4Label->setText("Calculate the Base Address");
+            ui->step4DisplayLabel->setText(QString("<tt>BASEADR = ((BBA & %1) >> 5) | 0x2000 0000").arg(s_temp_1));
             m_step++;
             break;
         case 4:
-            i_temp_1 = m_bitBand.bbAliasAddress();
-            i_temp_2 = 0x1FFFFE0;
+            i_temp_1 = m_bitBand.BitBand::aliasAddress();
+            i_temp_2 = m_bitBand.baseAddressOffset();
             i_temp_3 = i_temp_1 & i_temp_2 ;
             s_temp_1 = Tools::toNibbles(i_temp_1);
             s_temp_2 = Tools::toNibbles(i_temp_2);
@@ -246,7 +267,7 @@ void BitBandWidget::nextStepRequested()
             m_step++;
             break;
         case 5:
-            i_temp_1 = (m_bitBand.bbAliasAddress() & 0x1FFFFE0) >> 5;
+            i_temp_1 = (m_bitBand.BitBand::aliasAddress() & 0x1FFFFE0) >> 5;
             s_temp_1 = Tools::toNibbles(i_temp_1);
             ui->step6Label->setText("<tt>2: >> 5");
             ui->step6DisplayLabel->setAlignment(Qt::AlignRight);
@@ -255,7 +276,7 @@ void BitBandWidget::nextStepRequested()
             break;
         case 6:
             i_temp_1 = 0x20000000;
-            i_temp_2 = m_bitBand.bbAddress();
+            i_temp_2 = m_bitBand.baseAddress();
             s_temp_1 = Tools::toNibbles(i_temp_1);
             s_temp_2 = Tools::toNibbles(i_temp_2);
             s_temp_3 = Tools::toHex(i_temp_2);
@@ -278,27 +299,34 @@ void BitBandWidget::nextStepRequested()
     case Direction::FromBitPos:
         switch (m_step) {
         case 0:
+            i_temp_1 = m_bitBand.aliasStartAddress();
+            i_temp_2 = m_bitBand.addressSpaceStartAddress();
+            s_temp_1 = Tools::toHex(i_temp_1);
+            s_temp_2 = Tools::toHex(i_temp_2);
             ui->step1Label->setText("Calculate the BBA");
-            ui->step1DisplayLabel->setText("<tt>BBA = 0x2200 0000 + (X − 0x2000 0000) × 32 + n × 4");
+            ui->step1DisplayLabel->setText(QString("<tt>BBA = 0x%1 + (X − 0x%2) × 32 + n × 4")
+                                           .arg(s_temp_1, s_temp_2));
             m_step++;
             break;
         case 1:
+            i_temp_1 = m_bitBand.addressSpaceStartAddress();
+            i_temp_2 = m_bitBand.baseAddress();
+            s_temp_1 = Tools::toHex(i_temp_1);
+            s_temp_2 = Tools::toNibbles(i_temp_1);
+            s_temp_3 = Tools::toNibbles(i_temp_2);
+            s_temp_4 = Tools::toNibbles(i_temp_2 - i_temp_1);
 
-            s_temp_1   = Tools::toNibbles(m_bitBand.bbAddress(), Tools::AlignRight);
-            s_temp_2   = Tools::toNibbles(0x20000000, Tools::AlignRight);
-            s_temp_3 = Tools::toNibbles(m_bitBand.bbAddress() - 0x20000000, Tools::AlignRight);
-
-            ui->step2Label->setText("1: <tt>(X − 0x2000 0000)");
+            ui->step2Label->setText(QString("1: <tt>(X − 0x%1)").arg(s_temp_1));
             ui->step2DisplayLabel->setAlignment(Qt::AlignRight);
             ui->step2DisplayLabel->setText(
                         QString("<tt>%1<br>"
                                 "- %2<hr>"
                                 "= %3<br></tt>")
-                        .arg(s_temp_1, s_temp_2, s_temp_3));
+                        .arg(s_temp_2, s_temp_3, s_temp_4));
             m_step++;
             break;
-        case 2:
-            s_temp_1 = Tools::toNibbles((m_bitBand.bbAddress() - 0x20000000) << 5, Tools::AlignRight);
+        case 2:            
+            s_temp_1 = Tools::toNibbles((m_bitBand.baseAddress() - m_bitBand.addressSpaceStartAddress()) << 5);
             ui->step3DisplayLabel->setAlignment(Qt::AlignRight);
             ui->step3Label->setText("2: << 5 to multiply by 32");
             ui->step3DisplayLabel->setText(QString("<tt>&lt;&lt; 5<hr>"
@@ -307,18 +335,18 @@ void BitBandWidget::nextStepRequested()
             m_step++;
             break;
         case 3:
-            i_temp_1 = (m_bitBand.bbAddress() - 0x20000000) << 5;
+            i_temp_1 = (m_bitBand.baseAddress() - m_bitBand.addressSpaceStartAddress()) << 5;
             s_temp_1 = Tools::toHex(i_temp_1);
             ui->step4Label->setText("Convert back to Hexadecimal");
             ui->step4DisplayLabel->setAlignment(Qt::AlignRight);
-            ui->step4DisplayLabel->setText(QString("<tt><hr> = <b>0x%2")
+            ui->step4DisplayLabel->setText(QString("<tt><hr> = <b>0x%1")
                                            .arg(s_temp_1));
             m_step++;
             break;
         case 4:
-            i_temp_1   = 0x22000000;
+            i_temp_1   = m_bitBand.aliasStartAddress();
             s_temp_1   = Tools::toHex(i_temp_1);
-            s_temp_2   = Tools::toHex(((m_bitBand.bbAddress() - 0x20000000) << 5) + i_temp_1);
+            s_temp_2   = Tools::toHex(((m_bitBand.baseAddress() - m_bitBand.addressSpaceStartAddress()) << 5) + i_temp_1);
             ui->step5Label->setText(QString("Add <tt>0x%1").arg(s_temp_1));
             ui->step5DisplayLabel->setAlignment(Qt::AlignRight);
             ui->step5DisplayLabel->setText(QString("<tt>"
@@ -331,7 +359,7 @@ void BitBandWidget::nextStepRequested()
             i_temp_1 = m_bitBand.bitPos();
             s_temp_1 = QString("<tt>%1 x 4").arg(i_temp_1);
             s_temp_2 = Tools::toHex(4 * i_temp_1);
-            s_temp_3 = Tools::toHex(m_bitBand.bbAliasAddress());
+            s_temp_3 = Tools::toHex(m_bitBand.BitBand::aliasAddress());
             ui->step6Label->setText(QString("Add %1").arg(s_temp_1));
             ui->step6DisplayLabel->setAlignment(Qt::AlignRight);
             ui->step6DisplayLabel->setText(QString("<tt>+ 0x%1<hr>BBA = <b>0x%2")

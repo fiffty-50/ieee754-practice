@@ -15,7 +15,7 @@ public:
 
     static FloatRepresentation generateFloatingPointExerciseNew(Difficulty difficulty);
 
-    static BitBand generateBitBandExercise(Difficulty difficulty);
+    static BitBand generateBitBandExercise(Difficulty difficulty, BitBand::AddressingType addressing = BitBand::AddressingType::Byte);
 };
 
 #endif // EXERCISEGENERATOR_H

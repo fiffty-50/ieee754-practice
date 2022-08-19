@@ -19,19 +19,23 @@ public:
 
 private:
     Ui::BitBandWidget *ui;
+    QButtonGroup *ui_directionButtonGroup  = nullptr;
+    QButtonGroup *ui_addressingButtonGroup = nullptr;
     void connectSignals();
     void clearLabels();
-    enum class InputError { NotRecognized, OutOfRangeBB, OutOfRangeBBA };
+    enum class InputError { NotRecognized, OutOfRange };
     bool checkUserInput();
     void badUserInput(InputError error_code);
 
     enum Direction{FromBBA, FromBitPos};
     Direction m_direction = Direction::FromBBA;
-    BitBand m_bitBand = BitBand(0);
+    BitBand m_bitBand;
     int m_step = 0;
+    BitBand::AddressingType m_addressing = BitBand::AddressingType::Byte;
 
 private slots:
-    void buttonGroupClicked(QAbstractButton *button);
+    void directionChanged(QAbstractButton *button);
+    void addressingTypeChanged(QAbstractButton *button);
     void difficultyChanged(int index);
     void startButtonClicked();
     void nextStepRequested();

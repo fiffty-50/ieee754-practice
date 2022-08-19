@@ -7,40 +7,48 @@
  * \brief The BitBand class encapsulates the logic for solving bit-banding exercises.
  * The Cortex-M4 is taken as an example, i.e. there are two bit banding areas, one for data
  * (0x2000 0000 through 0x200F FFFF are mapped to 0x2200 0000 through 0x23ffffff),
- * and one for peripherals(0x4000 0000 through 0x400F FFFF are mapped to 0x4200 0000 through 0x42FF FFFF ).
+ * and one for peripherals (0x4000 0000 through 0x400F FFFF are mapped to 0x4200 0000 through 0x42FF FFFF ).
  */
 class BitBand
 {
 public:
-    enum Range {data, peripherals};
-    BitBand() = delete;
-    BitBand(int bit_banding_alias_address);
-    BitBand(int bit_banding_address, int bit_position);
+    enum class AddressSpace {Data, Peripherals, OutOfRange};
+    enum class AddressingType {Byte, Word};
 
-    int bbAliasAddress() const;
-    int bbAddress() const;
+    BitBand();
+    BitBand(int bit_banding_alias_address, AddressingType addressing = AddressingType::Byte);
+    BitBand(int bit_banding_address, int bit_position, AddressingType addressing = AddressingType::Byte);
+    ~BitBand() = default;
+
+    int aliasAddress() const;
+    int baseAddress() const;
     int bitPos() const;
 
-    enum Direction {FromBBA, FromBitPos};
-    QString getStep(Direction direction, int step_number);
+    int bitPosOffset() const;
+    int baseAddressOffset() const;
+    int aliasStartAddress() const;
+    int addressSpaceStartAddress() const;
+    AddressingType addressingType() const;
+    AddressSpace addressSpace() const;
 
 private:
-    int m_bbAliasAddress = 0;
-    int m_bbAddress = 0;
+    int m_AliasAddress = 0;
+    int m_baseAddress = 0;
     int m_bitPos = 0;
+    AddressingType m_addressing;
+    AddressSpace m_addressSpace;
 
-    const static int m_BB_start_address_data = 0x20000000;
-    const static int m_BB_end_address_data = 0x200fffff;
-    const static int m_BBA_start_address_data = 0x22000000;
-    const static int m_BBA_end_address_data = 0x23ffffff;
+    const static int START_DATA  = 0x20000000;
+    const static int START_PERI  = 0x40000000;
+    const static int BB_RANGE    = 0xfffff;
 
-    const static int m_BB_start_address_peripherals = 0x40000000;
-    const static int m_BB_end_address_peripherals = 0x400fffff;
-    const static int m_BBA_start_address_peripherals = 0x42000000;
-    const static int m_BBA_end_address_peripherals = 0x43ffffff;
+    const static int BBA_OFFSET  = 0x02000000;
+    const static int BBA_RANGE   = 0x1ffffff;
 
-
-
+    const static int BYTE_MASK   = 0x1c;
+    const static int WORD_MASK   = 0x7c;
+    const static int BYTE_OFFSET = 0x1ffffe0;
+    const static int WORD_OFFSET = 0x1ffff80;
 };
 
 #endif // BITBAND_H

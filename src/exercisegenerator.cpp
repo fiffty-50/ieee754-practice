@@ -75,7 +75,7 @@ FloatRepresentation ExerciseGenerator::generateFloatingPointExerciseNew(Difficul
     return ret;
 }
 
-BitBand ExerciseGenerator::generateBitBandExercise(Difficulty difficulty)
+BitBand ExerciseGenerator::generateBitBandExercise(Difficulty difficulty, BitBand::AddressingType addressing)
 {
     // Easy :  Bitpos 0  <= n <= 4      BB-Addr. 0x2000 0000 through 0x2000 0F00
     // Medium: Bitpos 5  <= n <= 10     BB-Addr. 0x2000 0000 through 0x2000 F000
@@ -100,5 +100,5 @@ BitBand ExerciseGenerator::generateBitBandExercise(Difficulty difficulty)
         break;
     }
 
-    return BitBand(bitBandAddress, bitPos);
+    return BitBand(bitBandAddress, bitPos, addressing);
 }
