@@ -217,7 +217,7 @@ void DecToIeee::concatenate()
 // Step 7 - split the bits into nibbles
 void DecToIeee::stringToNibbles()
 {
-    ui->nibblesDisplayLabel->setText(m_number.toNibbles());
+    ui->nibblesDisplayLabel->setText(m_number.toString(Number::Format::Nibbles));
 }
 
 // Step 8 - convert Z32 to 0x

@@ -61,6 +61,12 @@ QString Number::toString(Format format)
     case Format::Hexadecimal:
         return toHexString();
         break;
+    case Format::Nibbles:
+        return toNibbles(false);
+        break;
+    case Format::StyledNibbles:
+        return toNibbles(true);
+        break;
     default:
         return {};
     }
@@ -120,12 +126,12 @@ QString Number::toNibbles(bool styled)
         for (int i = 0; i < 9; i++)
             out.append(binary_string.mid(4 * i, 4) + QLatin1Char(' '));
     } else {
-        out.append(QLatin1String("<font color='blue'>") + binary_string[0] + QLatin1String("</font><font color='orange'>") + binary_string.mid(1,3)); // first nibble
+        out.append(QLatin1String("<tt><font color='blue'>") + binary_string[0] + QLatin1String("</font><font color='green'>") + binary_string.mid(1,3)); // first nibble
         out.append(QLatin1Char(' ') + binary_string.mid(4,4));
-        out.append(QLatin1Char(' ') + binary_string[8] + QLatin1String("</font><font color='green'>") + binary_string.mid(9,3));
+        out.append(QLatin1Char(' ') + binary_string[8] + QLatin1String("</font><font color='orange'>") + binary_string.mid(9,3) + ' ');
         for (int i = 3; i < 9; i++)
             out.append(binary_string.mid(4 * i, 4) + QLatin1Char(' '));
-        out.append(QLatin1String("</font>"));
+        out.append(QLatin1String("</font></tt>"));
     }
     return out;
 }
@@ -218,7 +224,7 @@ QString Number::toHexString()
     if (!ok)
         return QString();
 
-    QString hex_string = QString::number(value, 16);  //Create number string with base 16
-    return hex_string.toUpper();
+    QString hex_string = QLatin1String("0x") + QString::number(value, 16).toUpper();  //Create number string with base 16
+    return hex_string;
 }
 

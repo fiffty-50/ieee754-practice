@@ -32,9 +32,6 @@ MainWindow::MainWindow(QWidget *parent)
     auto floatConverterWidget = new FloatConverterWidget(this);
     ui->tabWidget->addTab(floatConverterWidget, "Floating Point Conversion");
     ui->tabWidget->setCurrentWidget(floatConverterWidget);
-
-//    auto bb = ExerciseGenerator::generateBitBandExercise(Difficulty::easy, BitBand::AddressingType::Byte);
-//    DEB << bb;
 }
 
 MainWindow::~MainWindow()

@@ -112,7 +112,7 @@ void IeeeToDec::on_resultRequested()
 
 void IeeeToDec::hexToBinary()
 {
-    ui->binaryDisplayLabel->setText(m_number.toNibbles(true));
+    ui->binaryDisplayLabel->setText(m_number.toString(Number::Format::StyledNibbles));
 }
 
 void IeeeToDec::determineBias()

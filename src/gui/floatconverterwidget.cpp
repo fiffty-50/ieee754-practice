@@ -83,7 +83,7 @@ void FloatConverterWidget::startConversion()
     switch (ui->difficultyComboBox->currentIndex()) {
     case 3: // custom
         DEB << __PRETTY_FUNCTION__ << "NOT CURRENTLY WORKING";
-        qApp->quit();
+        return;
         clearLabels();
         m_step = 0;
         bool ok;
@@ -114,7 +114,18 @@ void FloatConverterWidget::startConversion()
         m_number = ExerciseGenerator::generateFloatingPointExercise(Difficulty(diff_index));
 
         ui->exerciseLabel->setText("Convert the following number:");
-        ui->exerciseDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
+        auto text = QString("<b><tt>%1</b></tt>");
+        switch (m_direction){
+        case DecToHex:
+            text = text.arg(m_number.toString(Number::Format::Decimal));
+            break;
+        case HexToDec:
+            text = text.arg(m_number.toString(Number::Format::Hexadecimal));
+            break;
+        default:
+            break;
+        }
+        ui->exerciseDisplayLabel->setText(text);
         ui->nextPushButton->setEnabled(true);
         ui->resultPushButton->setEnabled(true);
         break;
@@ -123,6 +134,7 @@ void FloatConverterWidget::startConversion()
 
 void FloatConverterWidget::nextStepRequested()
 {
+    // allocate some temps to use in switch
     int int_temp_1, int_temp_2, int_temp_3;
     QString string_temp_1, string_temp_2, string_temp_3, string_temp_4;
 
@@ -156,7 +168,7 @@ void FloatConverterWidget::nextStepRequested()
             m_step++;
             break;
         case 3:
-            // Determine the biased exponent";
+            // Determine the biased exponent;
             string_temp_1 = QString::number(m_number.getBias());
             string_temp_2 = QString::number(m_number.getBias() + 127);
 
@@ -173,29 +185,33 @@ void FloatConverterWidget::nextStepRequested()
             ui->step4Label->setText("Convert to binary");
             ui->step4DisplayLabel->setText(QString("<tt><b><font color='green'>%1</font></tt></b>")
                                            .arg(string_temp_1));
-            DEB << "Hier geht es weiter...";
+            m_step++;
+            break;
+        case 5:
+            // Determine sign bit
+            int_temp_1 = m_number.getSign();
+            if (int_temp_1)
+                string_temp_1 = "The number is negative, so the sign bit is: <font color='blue'><b>1</b></font>";
+            else
+                string_temp_1 = "The number is positive, so the sign bit is: <font color='blue'><b>0</b></font>";
 
-        //case 4:
-        //    qDebug() << "Step 5 - Determine the sign bit";
-        //    determineSignBit();
-        //    m_step++;
-        //    break;
-        //case 5:
-        //    qDebug() << "Step 6 - Concatenate the elements";
-        //    concatenate();
-        //    m_step++;
-        //    break;
-        //case 6:
-        //    qDebug() << "Step 7 - Break up the string into nibbles";
-        //    stringToNibbles();
-        //    m_step++;
-        //    break;
-        //case 7:
-        //    qDebug() << "Step 8 - Convert to Hexadecimal";
-        //    stringToHex();
-        //    ui->nextPushButton->setEnabled(false);
-        //    ui->resultPushButton->setEnabled(false);
-        //    break;
+            ui->step5Label->setText("Determine the sign bit");
+            ui->step5DisplayLabel->setText(string_temp_1);
+            m_step++;
+            break;
+        case 6:
+            // Concatenate
+            ui->step6Label->setText("Concatenate the elements");
+            ui->step6DisplayLabel->setText(m_number.toString(Number::Format::StyledNibbles));
+            m_step++;
+            break;
+        case 7:
+            // Convert to Hex
+            ui->step7Label->setText("Convert to hexadecimal");
+            ui->step7DisplayLabel->setText(QString("<tt><bb>0x%1</tt></bb>")
+                                           .arg(m_number.toString(Number::Format::Hexadecimal)));
+            m_step++;
+            break;
         }
     case Direction::HexToDec:
 
@@ -207,7 +223,8 @@ void FloatConverterWidget::nextStepRequested()
 
 void FloatConverterWidget::resultRequested()
 {
-
+    for (int i = 0; i < 10; i++)
+        nextStepRequested();
 }
 
 

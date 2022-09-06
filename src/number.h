@@ -13,18 +13,13 @@ public:
     Number(bool sign_, const QBitArray &integer_, const QBitArray &decimals_)
         : sign(sign_), integer(integer_), decimals(decimals_) {}
 
-    enum class Format {Binary, Decimal, Hexadecimal};
+    enum class Format {Binary, Decimal, Hexadecimal, Nibbles, StyledNibbles};
 
     /*!
      * \brief return the encapsulated number as a string representation
      * \return
      */
     QString toString(Format format);
-
-    /*!
-     * \brief return a (optionally styled) string of the nibbles making up the binary representation of self
-     */
-    QString toNibbles(bool styled = false);
 
     /*!
      * \brief returns a string of the absolute binary representation of number
@@ -67,11 +62,7 @@ public:
         DEB << "integer part: " << integer;
         DEB << "decimal part: " << decimals;
         return QString();
-    };
-
-
-
-
+    }
 
 private:
     bool sign = false;
@@ -93,6 +84,11 @@ private:
      * \brief return a string of the binary representation of self
      */
     QString toBinaryString();
+
+    /*!
+     * \brief return a (optionally styled) string of the nibbles making up the binary representation of self
+     */
+    QString toNibbles(bool styled = false);
 };
 
 #endif // NUMBER_H
