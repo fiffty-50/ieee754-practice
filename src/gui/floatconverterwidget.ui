@@ -95,11 +95,6 @@
        <string>Hard</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>Custom</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="12" column="0">

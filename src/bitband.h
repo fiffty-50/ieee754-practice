@@ -1,6 +1,8 @@
 #ifndef BITBAND_H
 #define BITBAND_H
 
+#include "src/debug.h"
+#include "src/tools.h"
 #include <QString>
 
 /*!
@@ -30,6 +32,27 @@ public:
     int addressSpaceStartAddress() const;
     AddressingType addressingType() const;
     AddressSpace addressSpace() const;
+
+    operator QString(){
+        QString addr;
+        switch (m_addressing) {
+        case AddressingType::Byte:
+            addr = "Byte";
+            break;
+        case AddressingType::Word:
+            addr = "Word";
+            break;
+        default:
+            break;
+        }
+        DEB << "### Bit Band ###";
+        DEB << "Addressing  : " << addr;
+        DEB << "Base Address: " << Tools::toHex(m_baseAddress);
+        DEB << "Bit Position: " << m_bitPos;
+        DEB << "BBA Address : " << Tools::toHex(m_AliasAddress);
+        DEB << "###";
+        return QString();
+    }
 
 private:
     int m_AliasAddress = 0;

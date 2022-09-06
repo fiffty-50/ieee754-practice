@@ -70,7 +70,9 @@ void DecToIeee::on_StartConversion()
         Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
         m_number = ExerciseGenerator::generateFloatingPointExercise(difficulty);
 
-        ui->decimalDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
+        DEB << __PRETTY_FUNCTION__ << "Number not showing on label..?";
+        ui->decimalLabel->setText(m_number.toString(Number::Format::Decimal));
+        ui->decimalDisplayLabel->setVisible(true);
         ui->nextPushButton->setEnabled(true);
         ui->resultPushButton->setEnabled(true);
         clearLabels();

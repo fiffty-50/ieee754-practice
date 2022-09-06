@@ -1,4 +1,5 @@
 #include "number.h"
+#include "src/tools.h"
 #include <math.h>
 #include <QRegularExpression>
 #include <QDebug>
@@ -67,13 +68,17 @@ QString Number::toString(Format format)
 
 
 
-QString Number::mantissa()
+QString Number::mantissa(bool styled)
 {
     QString mantissa = normalisedBinary();
     mantissa.remove(0,2);
     while (mantissa.length() != 23)
         mantissa.append(QLatin1Char('0'));
-    return mantissa;
+
+    if (!styled)
+        return mantissa;
+    else
+        return Tools::toNibbles(QString("<font color='orange'>%1</font>").arg(mantissa), Tools::AlignRight);
 }
 
 QString Number::biasedExponent(Format format)

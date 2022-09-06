@@ -80,25 +80,49 @@ BitBand ExerciseGenerator::generateBitBandExercise(Difficulty difficulty, BitBan
     // Easy :  Bitpos 0  <= n <= 4      BB-Addr. 0x2000 0000 through 0x2000 0F00
     // Medium: Bitpos 5  <= n <= 10     BB-Addr. 0x2000 0000 through 0x2000 F000
     // Hard:   Bitpos 11 <= n <= 31     BB-Addr. 0x2000 0000 through 0x200F FFFF
-    int bitBandAddress, bitPos;
+    //int bitBandAddress, bitPos;
+    //switch (difficulty) {
+    //case Difficulty::easy:
+    //    bitBandAddress = QRandomGenerator::global()->bounded(0x20000000, 0x20000F00);
+    //    bitPos =         QRandomGenerator::global()->bounded(4);
+    //    break;
+    //case Difficulty::moderate:
+    //    bitBandAddress = QRandomGenerator::global()->bounded(0x20000F00, 0x2000F000);
+    //    bitPos =         QRandomGenerator::global()->bounded(5, 10);
+    //    break;
+    //case Difficulty::hard:
+    //    bitBandAddress = QRandomGenerator::global()->bounded(0x2000F000, 0x200FFFFF);
+    //    bitPos =         QRandomGenerator::global()->bounded(11, 31);
+    //    break;
+    //default:
+    //    bitBandAddress = QRandomGenerator::global()->bounded(0x20000000, 0x20000F00);
+    //    bitPos =         QRandomGenerator::global()->bounded(4);
+    //    break;
+    //}
+    //DEB << "Generating: " << Tools::toHex(bitBandAddress) << " Bit Pos:" << bitPos;
+    //return BitBand(bitBandAddress, bitPos, addressing);
+
+    bool random = RandomBits::randomBit();
+    int bitBandAddress;
+
     switch (difficulty) {
     case Difficulty::easy:
-        bitBandAddress = QRandomGenerator::global()->bounded(0x20000000, 0x20000F00);
-        bitPos =         QRandomGenerator::global()->bounded(4);
+        bitBandAddress = QRandomGenerator::global()->bounded(0x22000000, 0x2200ffff);
         break;
     case Difficulty::moderate:
-        bitBandAddress = QRandomGenerator::global()->bounded(0x20000F00, 0x2000F000);
-        bitPos =         QRandomGenerator::global()->bounded(5, 10);
+        bitBandAddress = QRandomGenerator::global()->bounded(0x22000000, 0x220fffff);
+        if(random)
+            bitBandAddress += 0x20000000;
         break;
     case Difficulty::hard:
-        bitBandAddress = QRandomGenerator::global()->bounded(0x2000F000, 0x200FFFFF);
-        bitPos =         QRandomGenerator::global()->bounded(11, 31);
+        bitBandAddress = QRandomGenerator::global()->bounded(0x22000000, 0x23ffffff);
+        if(random)
+            bitBandAddress += 0x20000000;
         break;
     default:
-        bitBandAddress = QRandomGenerator::global()->bounded(0x20000000, 0x20000F00);
-        bitPos =         QRandomGenerator::global()->bounded(4);
+        bitBandAddress = QRandomGenerator::global()->bounded(0x22000000, 0x23ffffff);
         break;
     }
 
-    return BitBand(bitBandAddress, bitPos, addressing);
+    return BitBand(bitBandAddress, addressing);
 }

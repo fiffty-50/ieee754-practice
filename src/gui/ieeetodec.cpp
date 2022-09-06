@@ -47,7 +47,7 @@ void IeeeToDec::on_generateExample()
     Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
     m_number = ExerciseGenerator::generateFloatingPointExercise(difficulty);
 
-    const QString text = QLatin1String("<b>") + m_number.toString(Number::Format::Hexadecimal) + QLatin1String("</b>");
+    const QString text = QLatin1String("<b>0x") + m_number.toString(Number::Format::Hexadecimal) + QLatin1String("</b>");
     ui->hexDisplayLabel->setText(text);
     ui->nextPushButton->setEnabled(true);
     ui->resultPushButton->setEnabled(true);

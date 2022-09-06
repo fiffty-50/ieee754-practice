@@ -17,7 +17,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 set(PROJECT_SOURCES
         src/main.cpp
 
-        src/nibble.h
+        src/tools.h
         src/RandomBits.h
         src/number.h
         src/number.cpp

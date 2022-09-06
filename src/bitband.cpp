@@ -1,6 +1,6 @@
 #include "bitband.h"
 #include "src/debug.h"
-#include "src/nibble.h"
+#include "src/tools.h"
 #include <QRandomGenerator>
 
 BitBand::BitBand()
@@ -92,12 +92,19 @@ BitBand::BitBand(int bit_banding_address, int bit_position, AddressingType addre
     if(m_baseAddress >= START_PERI) { // AddressSpace::Peripherals
         m_AliasAddress = ((START_PERI + BBA_OFFSET) + ((m_baseAddress - START_PERI) << 5)) + (m_bitPos << 2);
         m_addressSpace = AddressSpace::Peripherals;
+        DEB << __PRETTY_FUNCTION__ << "Constructing Object in Peripheral Range.";
         return;
     }
 
     if(m_baseAddress >= START_DATA) { // Data
+        DEB << "Data In:" << Tools::toHex(bit_banding_address) << "Pos" << bit_position;
         m_AliasAddress = ((START_DATA + BBA_OFFSET) + ((m_baseAddress - START_DATA) << 5)) + (m_bitPos << 2);
         m_addressSpace = AddressSpace::Data;
+        DEB << __PRETTY_FUNCTION__ << "Constructing Object in Data Range.";
+        DEB << "Constructed  : ";
+        DEB << "Base Address: " << Tools::toHex(m_baseAddress);
+        DEB << "Bit Position: " << m_bitPos;
+        DEB << "BBA Address : " << Tools::toHex(m_AliasAddress);
         return;
     }
 

@@ -1,6 +1,7 @@
 #include "floatconverterwidget.h"
 #include "qmessagebox.h"
 #include "src/exercisegenerator.h"
+#include "src/tools.h"
 #include "ui_floatconverterwidget.h"
 
 FloatConverterWidget::FloatConverterWidget(QWidget *parent) :
@@ -32,7 +33,7 @@ void FloatConverterWidget::connectSignals()
     QObject::connect(ui->resultPushButton,   &QPushButton::clicked,
                      this,                   &FloatConverterWidget::resultRequested);
     QObject::connect(ui->buttonGroup,        &QButtonGroup::buttonClicked,
-                     this,                   &FloatConverterWidget::buttonGroupClicked);
+                     this,                   &FloatConverterWidget::directionChanged);
     QObject::connect(ui->difficultyComboBox, &QComboBox::currentIndexChanged,
                      this,                   &FloatConverterWidget::difficultyChanged);
 }
@@ -46,12 +47,11 @@ void FloatConverterWidget::clearLabels()
         ui->difficultyLabel->setText("Difficulty");
     } else {
         ui->difficultyLabel->setText("Difficulty");
-
     }
 
 }
 
-void FloatConverterWidget::buttonGroupClicked(QAbstractButton *button)
+void FloatConverterWidget::directionChanged(QAbstractButton *button)
 {
     if (button == ui->decToHexButton)
         m_direction = Direction::DecToHex;
@@ -82,6 +82,8 @@ void FloatConverterWidget::startConversion()
     QString string_in;
     switch (ui->difficultyComboBox->currentIndex()) {
     case 3: // custom
+        DEB << __PRETTY_FUNCTION__ << "NOT CURRENTLY WORKING";
+        qApp->quit();
         clearLabels();
         m_step = 0;
         bool ok;
@@ -99,7 +101,7 @@ void FloatConverterWidget::startConversion()
             ui->customLineEdit->setText(QString());
             return;
         }
-        m_number = FloatRepresentation::fromFloat(number_in);
+//        m_number = FloatRepresentation::fromFloat(number_in);
 
         ui->nextPushButton->setEnabled(true);
         ui->resultPushButton->setEnabled(true);
@@ -109,42 +111,70 @@ void FloatConverterWidget::startConversion()
         m_step = 0;
         int diff_index = ui->difficultyComboBox->currentIndex();
         difficultyChanged(diff_index);
-        m_number = ExerciseGenerator::generateFloatingPointExerciseNew(Difficulty(diff_index));
+        m_number = ExerciseGenerator::generateFloatingPointExercise(Difficulty(diff_index));
 
         ui->exerciseLabel->setText("Convert the following number:");
-        ui->exerciseDisplayLabel->setText(m_number.toString(FloatRepresentation::Decimal));
+        ui->exerciseDisplayLabel->setText(m_number.toString(Number::Format::Decimal));
         ui->nextPushButton->setEnabled(true);
         ui->resultPushButton->setEnabled(true);
         break;
     }
-    DEB << "Input Number: " << m_number.toFloat();
 }
 
 void FloatConverterWidget::nextStepRequested()
 {
+    int int_temp_1, int_temp_2, int_temp_3;
+    QString string_temp_1, string_temp_2, string_temp_3, string_temp_4;
+
     switch (m_direction) {
     case Direction::DecToHex:
         switch(m_step) {
         case 0:
-            qDebug() << "Step 1 - Convert the decimal base 10 number to its absolute base 2 representation";
-            //decimalToBinary();
+            // Convert the decimal base 10 number to its absolute base 2 representation
+            string_temp_1 = m_number.absoluteBinary();
+            ui->step0Label->setText("Convert to Binary");
+            ui->step0DisplayLabel->setText(QString("<tt>%1").arg(string_temp_1));
             m_step++;
             break;
-        //case 1:
-        //    qDebug() << "Step 2 - Determine the bias";
-        //    determineBias();
-        //    m_step++;
-        //    break;
-        //case 2:
-        //    qDebug() << "Step 3 - Pad the mantissa";
-        //    padMantissa();
-        //    m_step++;
-        //    break;
-        //case 3:
-        //    qDebug() << "Step 4 - Determine the biased exponent";
-        //    determineExponent();
-        //    m_step++;
-        //    break;
+        case 1:
+            // Determine the bias";
+            string_temp_1 = m_number.absoluteBinary();
+            string_temp_2 = m_number.normalisedBinary();
+            string_temp_3 = QString::number(m_number.getBias());
+
+            ui->step1Label->setText("Determine the bias");
+            ui->step1DisplayLabel->setText(QString("<tt>%1 = %2 x 2^<b><font color='red'>%3</font></b>")
+                                           .arg(string_temp_1, string_temp_2, string_temp_3 ));
+            m_step++;
+            break;
+        case 2:
+            // Determine the mantissa";
+            string_temp_1 = m_number.mantissa(true);
+            ui->step2Label->setText("Determine the mantissa");
+            ui->step2DisplayLabel->setText(QString("<tt><b><font color='orange'>%1</font></bb>")
+                                           .arg(string_temp_1));
+            m_step++;
+            break;
+        case 3:
+            // Determine the biased exponent";
+            string_temp_1 = QString::number(m_number.getBias());
+            string_temp_2 = QString::number(m_number.getBias() + 127);
+
+            ui->step3Label->setText("Determine the exponent");
+            ui->step3DisplayLabel->setText(QString("<tt>127 + <b><font color='red'>%1</font></b> = %2")
+                                           .arg(string_temp_1,string_temp_2));
+            m_step++;
+            break;
+        case 4:
+            // Convert to binary
+            string_temp_1 = m_number.biasedExponent();
+            string_temp_1.insert(1, ' ');
+            string_temp_1.insert(5, ' ');
+            ui->step4Label->setText("Convert to binary");
+            ui->step4DisplayLabel->setText(QString("<tt><b><font color='green'>%1</font></tt></b>")
+                                           .arg(string_temp_1));
+            DEB << "Hier geht es weiter...";
+
         //case 4:
         //    qDebug() << "Step 5 - Determine the sign bit";
         //    determineSignBit();

@@ -1,5 +1,5 @@
-#ifndef NIBBLE_H
-#define NIBBLE_H
+#ifndef TOOLS_H
+#define TOOLS_H
 #include <QString>
 
 namespace Tools {
@@ -100,7 +100,15 @@ const static inline QString toHex(int32_t number)
     return QString::number(number, 16).toUpper();
 }
 
+/*!
+ * \brief returns a string of the binary representation of an integer number
+ */
+const static inline QString toBitString(int32_t number)
+{
+    return QString::number(number, 2);
+}
 
-} // namespace Nibble
 
-#endif // NIBBLE_H
+} // namespace Tools
+
+#endif // TOOLS_H

@@ -1,7 +1,7 @@
 #include "bitbandwidget.h"
 #include "qbuttongroup.h"
 #include "qmessagebox.h"
-#include "src/nibble.h"
+#include "src/tools.h"
 #include "ui_bitbandwidget.h"
 #include "src/exercisegenerator.h"
 
@@ -177,12 +177,11 @@ void BitBandWidget::startButtonClicked()
         m_bitBand = ExerciseGenerator::generateBitBandExercise(difficulty, m_addressing);
     }
 
-    DEB << "Bit Band: " << m_bitBand.baseAddress() << m_bitBand.bitPos() << m_bitBand.BitBand::aliasAddress();
-
     m_step = 0;
     ui->nextPushButton->setEnabled(true);
     ui->resultPushButton->setEnabled(true);
     clearLabels();
+    DEB << "Bit Band:" << m_bitBand;
 
     switch (m_direction) {
     case Direction::FromBBA:
@@ -245,7 +244,7 @@ void BitBandWidget::nextStepRequested()
             DEB << "HERE!";
             s_temp_1 = Tools::toHex(m_bitBand.baseAddressOffset());
             ui->step4Label->setText("Calculate the Base Address");
-            ui->step4DisplayLabel->setText(QString("<tt>BASEADR = ((BBA & %1) >> 5) | 0x2000 0000").arg(s_temp_1));
+            ui->step4DisplayLabel->setText(QString("<tt>BASEADR = ((BBA & %1) ) | 0x2000 0000").arg(s_temp_1));
             m_step++;
             break;
         case 4:
@@ -267,7 +266,7 @@ void BitBandWidget::nextStepRequested()
             m_step++;
             break;
         case 5:
-            i_temp_1 = (m_bitBand.BitBand::aliasAddress() & 0x1FFFFE0) >> 5;
+            i_temp_1 = (m_bitBand.BitBand::aliasAddress() & m_bitBand.baseAddressOffset()) >> 5;
             s_temp_1 = Tools::toNibbles(i_temp_1);
             ui->step6Label->setText("<tt>2: >> 5");
             ui->step6DisplayLabel->setAlignment(Qt::AlignRight);

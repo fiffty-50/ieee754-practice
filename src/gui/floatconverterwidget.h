@@ -3,7 +3,8 @@
 
 #include <QWidget>
 #include "qabstractbutton.h"
-#include "src/floatrepresentation.h"
+//#include "src/floatrepresentation.h"
+#include "src/number.h"
 
 namespace Ui {
 class FloatConverterWidget;
@@ -24,14 +25,15 @@ private:
 
     enum Direction {DecToHex, HexToDec};
     Direction m_direction = DecToHex;
-    FloatRepresentation m_number;
+    //FloatRepresentation m_number;
+    Number m_number;
     int m_step = 0;
 
 private slots:
     void startConversion();
     void nextStepRequested();
     void resultRequested();
-    void buttonGroupClicked(QAbstractButton *button);
+    void directionChanged(QAbstractButton *button);
     void difficultyChanged(int index);
 };
 

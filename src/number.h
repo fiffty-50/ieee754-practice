@@ -39,7 +39,7 @@ public:
     /*!
      * \brief return the mantissa normalised to 23 digits
      */
-    QString mantissa();
+    QString mantissa(bool styled = false);
 
     /*!
      * \brief return the biased exponent in a binary String
