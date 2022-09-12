@@ -83,9 +83,16 @@ QString Number::mantissa(bool styled)
 
     if (!styled)
         return mantissa;
-    else
-        return Tools::toNibbles(QString("<font color='orange'>%1</font>").arg(mantissa), Tools::AlignRight);
+    else {
+        QString styled_string("<font color='orange'>");
+        styled_string.append(mantissa.first(3) + ' ');
+        mantissa.remove(0,3);
+        styled_string.append(Tools::toNibbles(mantissa));
+        styled_string.append("</font>");
+        return styled_string;
+    }
 }
+
 
 QString Number::biasedExponent(Format format)
 {

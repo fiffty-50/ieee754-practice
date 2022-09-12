@@ -174,7 +174,17 @@ void BitBandWidget::startButtonClicked()
         }
     } else {
         Difficulty difficulty = Difficulty(ui->difficultyComboBox->currentIndex());
-        m_bitBand = ExerciseGenerator::generateBitBandExercise(difficulty, m_addressing);
+
+        switch (m_direction) {
+        case FromBBA:
+            m_bitBand = ExerciseGenerator::generateBitBandExercise(difficulty, m_addressing, ExerciseGenerator::FromAliasAddress);
+            break;
+        case FromBitPos:
+            m_bitBand = ExerciseGenerator::generateBitBandExercise(difficulty, m_addressing, ExerciseGenerator::FromBaseAddress);
+            break;
+        default:
+            break;
+        }
     }
 
     m_step = 0;
@@ -188,12 +198,14 @@ void BitBandWidget::startButtonClicked()
         ui->step0Label->setText("Given the following:");
         ui->step0DisplayLabel->setText("Bit-Band Alias Address:  <b><tt>0x" + Tools::toHex(m_bitBand.BitBand::aliasAddress())
                                          + "</b></tt>");
+        ui->step1Label->setText("Calculate the Bit Position");
         break;
     case Direction::FromBitPos:
         ui->step0Label->setText("Given the following:");
         ui->step0DisplayLabel->setText(QString("Base Address X = <b><tt>0x%1</tt></b>, Bit Number n = <b> %2 </b>")
                                          .arg(Tools::toHex(m_bitBand.baseAddress()))
                                          .arg(m_bitBand.bitPos()));
+        ui->step1Label->setText("Calculate the BBA");
         break;
     default:
         break;
@@ -210,7 +222,6 @@ void BitBandWidget::nextStepRequested()
         switch (m_step) {
         case 0:
             s_temp_1 = Tools::toHex(m_bitBand.bitPosOffset());
-            ui->step1Label->setText("Calculate the Bit Position");
             ui->step1DisplayLabel->setText(QString("<tt>BITPOS = (BBA & 0x%1) >> 2").arg(s_temp_1));
             m_step++;
             break;
@@ -302,7 +313,6 @@ void BitBandWidget::nextStepRequested()
             i_temp_2 = m_bitBand.addressSpaceStartAddress();
             s_temp_1 = Tools::toHex(i_temp_1);
             s_temp_2 = Tools::toHex(i_temp_2);
-            ui->step1Label->setText("Calculate the BBA");
             ui->step1DisplayLabel->setText(QString("<tt>BBA = 0x%1 + (X − 0x%2) × 32 + n × 4")
                                            .arg(s_temp_1, s_temp_2));
             m_step++;

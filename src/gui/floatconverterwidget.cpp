@@ -180,9 +180,9 @@ void FloatConverterWidget::nextStepRequested()
         case 4:
             // Convert to binary
             string_temp_1 = m_number.biasedExponent();
+            ui->step4Label->setText("Convert to binary");
             string_temp_1.insert(1, ' ');
             string_temp_1.insert(5, ' ');
-            ui->step4Label->setText("Convert to binary");
             ui->step4DisplayLabel->setText(QString("<tt><b><font color='green'>%1</font></tt></b>")
                                            .arg(string_temp_1));
             m_step++;
@@ -208,7 +208,7 @@ void FloatConverterWidget::nextStepRequested()
         case 7:
             // Convert to Hex
             ui->step7Label->setText("Convert to hexadecimal");
-            ui->step7DisplayLabel->setText(QString("<tt><bb>0x%1</tt></bb>")
+            ui->step7DisplayLabel->setText(QString("<tt><b>%1</tt></b>")
                                            .arg(m_number.toString(Number::Format::Hexadecimal)));
             m_step++;
             break;

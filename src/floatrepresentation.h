@@ -42,16 +42,12 @@ private:
      */
     const QString toHex() const;
 
-    /*!
-     * \brief convert to a string of the decimal number.
-     */
-    const QString toDecimalString() const;
-
 public:
     operator QString(){ // For Debugging
         DEB << "Sign: " << m_sign;
         DEB << "Expo: " << m_exponent;
         DEB << "Mant: " << m_mantissa;
+        DEB << "Val : " << toString(Hexadecimal) << '/' << toString(Decimal);
         return QString();
     };
 };

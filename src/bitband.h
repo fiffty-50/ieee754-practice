@@ -50,8 +50,7 @@ public:
         DEB << "Base Address: " << Tools::toHex(m_baseAddress);
         DEB << "Bit Position: " << m_bitPos;
         DEB << "BBA Address : " << Tools::toHex(m_AliasAddress);
-        DEB << "###";
-        return QString();
+        return {};
     }
 
 private:

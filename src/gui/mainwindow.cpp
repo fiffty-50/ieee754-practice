@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
     auto floatConverterWidget = new FloatConverterWidget(this);
     ui->tabWidget->addTab(floatConverterWidget, "Floating Point Conversion");
     ui->tabWidget->setCurrentWidget(floatConverterWidget);
+
+    auto fp = FloatRepresentation::fromString("11000100000100110011000000000000");
+    DEB << fp;
 }
 
 MainWindow::~MainWindow()

@@ -81,10 +81,9 @@ FloatRepresentation FloatRepresentation::fromString(const QString &value_in)
     return FloatRepresentation(sign, exponent_array, mantissa_array);
 }
 
-#include "math.h"
 float FloatRepresentation::toFloat() const
 {
-    DEB << "Rounding errors may occur...";
+    //DEB << "Rounding errors may occur...";
     // convert Bit String to UInt
     bool ok;
     qint32 number = toString(Binary).toUInt(&ok, 2);
@@ -102,11 +101,6 @@ const QString FloatRepresentation::toHex() const
     return QLatin1String("0x") + QString::number(toUInt(), 16);
 }
 
-const QString FloatRepresentation::toDecimalString() const
-{
-
-}
-
 const QString FloatRepresentation::toString(Format format) const
 {
     // create a String of all the bits
@@ -120,7 +114,7 @@ const QString FloatRepresentation::toString(Format format) const
     for (int i = 0; i< m_mantissa.size(); i++)
         bit_string.append(QString::number(m_mantissa[i]));
 
-    DEB << __PRETTY_FUNCTION__ << "Bits: " << bit_string;
+    //DEB << __PRETTY_FUNCTION__ << "Bits: " << bit_string;
 
     // Prepare some switch variables and return the requested format
     bool ok;
