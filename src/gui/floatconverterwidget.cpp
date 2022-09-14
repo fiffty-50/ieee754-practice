@@ -214,8 +214,60 @@ void FloatConverterWidget::nextStepRequested()
             break;
         }
     case Direction::HexToDec:
+        switch (m_step) {
+        case 0:
+            // Convert the hexadecimal number to its base 2 representation
+            ui->step0Label->setText("Convert to base 2");
+            ui->step0DisplayLabel->setText(m_number.toString(Number::Format::StyledNibbles));
+            m_step++;
+            break;
+        case 1:
+            ui->step1Label->setText("Determine the bias");
+            string_temp_1 = m_number.biasedExponent(Number::Format::Binary);
+            string_temp_2 = m_number.biasedExponent(Number::Format::Decimal);
+            string_temp_3 = QString::number(m_number.getBias());
 
-        break;
+            ui->step1DisplayLabel->setText(QString("<tt>%1 = %2 <br> %2 - 127 = <b><font color='red'>%3</font></b>")
+                                           .arg(string_temp_1, string_temp_2, string_temp_3));
+            m_step++;
+            break;
+        case 2:
+            ui->step2Label->setText("Extract the mantissa");
+            string_temp_1 = m_number.mantissa();
+            string_temp_2 = QString::number(m_number.getBias());
+            ui->step2DisplayLabel->setText(QString("<tt>1.<font color='orange'>%1</font> x 2^<font color='red'>%2</font></tt>")
+                                           .arg(string_temp_1, string_temp_2));
+            m_step++;
+            break;
+        case 3:
+            ui->step3Label->setText("De-normalise the mantissa");
+            string_temp_1 = m_number.mantissa();
+            string_temp_1.prepend(QLatin1String("1"));
+            int_temp_1 = m_number.getBias() + 1;
+            string_temp_1.insert(int_temp_1, QLatin1Char('.'));
+
+            ui->step3DisplayLabel->setText(QString("<tt>%1</tt>").arg(string_temp_1));
+            m_step++;
+            break;
+        case 4:
+            ui->step4Label->setText("Check the sign bit");
+            if (m_number.getSign())
+                string_temp_1 = QString("The sign bit is <b><font color='blue'>1</font></b> so the number is <b>negative</b>");
+            else
+                string_temp_1 = QString("The sign bit is <b><font color='blue'>0</font></b> so the number is <b>positive</b>");
+            ui->step4DisplayLabel->setText(string_temp_1);
+            m_step++;
+            break;
+        case 5:
+            ui->step5Label->setText("Convert to decimal");
+            string_temp_1 = QLatin1String("<b>") + m_number.toString(Number::Format::Decimal);
+            ui->step5DisplayLabel->setText(string_temp_1);
+            m_step++;
+            // to do - be a bit more explicit here...
+            break;
+        default:
+            break;
+        }
     default:
         break;
     }

@@ -17,14 +17,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     connectSignals();
 
-    auto decToHex = new DecToIeee(this);
-    ui->tabWidget->addTab(decToHex, "Dec->Hex");
+    //auto decToHex = new DecToIeee(this);
+    //ui->tabWidget->addTab(decToHex, "Dec->Hex");
 
-    auto hexToDec = new IeeeToDec(this);
-    ui->tabWidget->addTab(hexToDec, "Hex->Dec");
-
-    auto bitBandWidget = new BitBandWidget(this);
-    ui->tabWidget->addTab(bitBandWidget, "Bit Banding");
+    //auto hexToDec = new IeeeToDec(this);
+    //ui->tabWidget->addTab(hexToDec, "Hex->Dec");
 
     auto intConverterWidget = new IntConverterWidget(this);
     ui->tabWidget->addTab(intConverterWidget, "Integer conversions");
@@ -33,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->addTab(floatConverterWidget, "Floating Point Conversion");
     ui->tabWidget->setCurrentWidget(floatConverterWidget);
 
-    auto fp = FloatRepresentation::fromString("11000100000100110011000000000000");
-    DEB << fp;
+    auto bitBandWidget = new BitBandWidget(this);
+    ui->tabWidget->addTab(bitBandWidget, "Bit Banding");
 }
 
 MainWindow::~MainWindow()
